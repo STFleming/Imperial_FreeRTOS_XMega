@@ -69,6 +69,11 @@
 /* Scheduler include files. */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "semphr.h"
+#include "queue.h"
+
+/* Hardware Drivers */
+#include "hardware_config.h"
 
 //-------------------------------------------------------------
 //				Function Prototypes
