@@ -85,6 +85,8 @@ void vApplicationIdleHook( void );
 //-------------------------------------------------------------
 short main( void )
 {
+	prvSetupHardware();
+	for(;;){}
 	return 0;
 }
 

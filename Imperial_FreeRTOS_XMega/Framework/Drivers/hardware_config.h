@@ -5,11 +5,14 @@
  *  Author: sf306
  */ 
 
+#include "avr_compiler.h"
 
 #ifndef HARDWARE_CONFIG_H_
 #define HARDWARE_CONFIG_H_
 
 void prvSetupHardware(void);
+void prvPortSetup(void);
+void prvHoldPowerOn(void);
 
 
 
