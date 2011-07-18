@@ -151,7 +151,7 @@ typedef portBASE_TYPE (*pdTASK_HOOK_CODE)( void * );
 #endif
 
 #ifndef configUSE_MUTEXES
-	#define configUSE_MUTEXES 0
+	#define configUSE_MUTEXES 1
 #endif
 
 #ifndef configUSE_TIMERS

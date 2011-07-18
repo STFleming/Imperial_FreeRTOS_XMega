@@ -76,10 +76,20 @@
 /* Hardware Drivers */
 #include "hardware_config.h"
 
+/*Task Header files and implementation files */
+#include "AppTask.h"
+
 //-------------------------------------------------------------
 //				Function Prototypes
 //-------------------------------------------------------------
 void vApplicationIdleHook( void );
+//-------------------------------------------------------------
+
+//-------------------------------------------------------------
+// Global variables
+//-------------------------------------------------------------
+xSemaphoreHandle xMutexPrinting; //Handle for the Mutex
+//-------------------------------------------------------------
 
 //-------------------------------------------------------------
 //					Main Function 
@@ -91,6 +101,21 @@ short main( void )
 	//LCD printing tests to tryout drivers.
 	lcd_init(GRAPHTEXT);
 	//lcd_putsp(PSTR("Trying out printing"));
+	
+	//-----------------------------------------------------
+	// Creating MUTEXs and Semaphores before Task Creation.
+	//-----------------------------------------------------
+	xMutexPrinting = xSemaphoreCreateMutex();
+	//-----------------------------------------------------
+	
+	//--------------------------------------
+	//Create Tasks before starting scheduler
+	//--------------------------------------
+	CreateTaskOne();
+	CreateTaskTwo();
+	CreateTaskThree();
+	//--------------------------------------
+	
 	
 	vTaskStartScheduler();
 	
@@ -111,4 +136,3 @@ void vApplicationIdleHook( void )
 	lcd_putsp(PSTR("Hook test"));
 	//printN(xTaskGetTickCount());
 }
-
