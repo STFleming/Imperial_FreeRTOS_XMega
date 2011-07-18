@@ -13,6 +13,8 @@
 void prvSetupHardware(void);
 void prvPortSetup(void);
 void prvHoldPowerOn(void);
+void prvClockSetup(void);
+void CCPWrite( volatile uint8_t * address, uint8_t value );
 
 
 
