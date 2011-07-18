@@ -90,10 +90,14 @@ short main( void )
 	
 	//LCD printing tests to tryout drivers.
 	lcd_init(GRAPHTEXT);
-	lcd_putsp(PSTR("Trying out printing"));
+	//lcd_putsp(PSTR("Trying out printing"));
 	
-	for(;;){}
-	return 0;
+	vTaskStartScheduler();
+	
+	for(;;){
+		lcd_putsp(PSTR("ERROR Scheduler unexpected exit"));
+	}
+	return;
 }
 
 //-------------------------------------------------------------
@@ -103,5 +107,8 @@ short main( void )
 void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running apart from the idle task.
+	lcd_init(GRAPHTEXT);
+	lcd_putsp(PSTR("Hook test"));
+	//printN(xTaskGetTickCount());
 }
 

@@ -387,6 +387,20 @@ static void prvSetupTimerInterrupt( void )
 {
 // Stub for the function used to setup the tick timer in the 
 // freeRTOS.
+
+//Timer Configuration:
+//The clk is running at 32MHz. This means we need to satisfy the equation
+// (32MHz/prescaler)/PER = 1KHz.
+	TCC0.CTRLA = 0x03; //This sets the prescaler: clk/4 this gives the timer a clock of 8MHz
+	TCC0.CTRLB = 0x00; //Puts the timer in normal operation mode. TOP = PER, Updates at TOP and event at TOP.
+	TCC0.CTRLFSET = 0x00; //This sets the timer up so that the counter is incrementing.
+	TCC0.CNT = 0x00; //This register sets the counter initially to zero.
+	TCC0.PER = 0x3520; //Sets the max counter value to 8000.
+	TCC0.INTCTRLA = 0x01; //Generates a LOW level interrupt when the counter has reached PER
+
+//Enable Low Level interrupts
+	PMIC.CTRL = 0x01; //Enables only low level interrupts on the device.
+
 }
 /*-----------------------------------------------------------*/
 
@@ -397,8 +411,7 @@ static void prvSetupTimerInterrupt( void )
 	 * the context is saved at the start of vPortYieldFromTick().  The tick
 	 * count is incremented after the context is saved.
 	 */
-	void SIG_OUTPUT_COMPARE1A( void ) __attribute__ ( ( signal, naked ) );
-	void SIG_OUTPUT_COMPARE1A( void )
+ISR (TCC0_OVF_vect, ISR_NAKED)
 	{
 		vPortYieldFromTick();
 		asm volatile ( "reti" );
@@ -410,8 +423,7 @@ static void prvSetupTimerInterrupt( void )
 	 * tick count.  We don't need to switch context, this can only be done by
 	 * manual calls to taskYIELD();
 	 */
-	void SIG_OUTPUT_COMPARE1A( void ) __attribute__ ( ( signal ) );
-	void SIG_OUTPUT_COMPARE1A( void )
+ISR (TCC0_OVF_vect, ISR_NAKED)
 	{
 		vTaskIncrementTick();
 	}
