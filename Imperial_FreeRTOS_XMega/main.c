@@ -71,6 +71,7 @@
 #include "task.h"
 #include "semphr.h"
 #include "queue.h"
+#include "sed1335.h"
 
 /* Hardware Drivers */
 #include "hardware_config.h"
@@ -86,6 +87,11 @@ void vApplicationIdleHook( void );
 short main( void )
 {
 	prvSetupHardware();
+	
+	//LCD printing tests to tryout drivers.
+	lcd_init(GRAPHTEXT);
+	lcd_putsp(PSTR("Trying out printing"));
+	
 	for(;;){}
 	return 0;
 }
