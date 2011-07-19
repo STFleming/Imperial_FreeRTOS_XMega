@@ -79,6 +79,9 @@
 /*Task Header files and implementation files */
 #include "AppTask.h"
 
+/*Demo application header files */
+#include "integer.h"
+
 //-------------------------------------------------------------
 //				Function Prototypes
 //-------------------------------------------------------------
@@ -111,16 +114,16 @@ short main( void )
 	//--------------------------------------
 	//Create Tasks before starting scheduler
 	//--------------------------------------
-	CreateTaskOne();
-	CreateTaskTwo();
-	CreateTaskThree();
+	//CreateTaskOne();
+	//CreateTaskTwo();
+	//CreateTaskThree();
+	vStartIntegerMathTasks( tskIDLE_PRIORITY ); //Test tasks used to determine reliability of mathematical calculations.
 	//--------------------------------------
-	
 	
 	vTaskStartScheduler();
 	
+	lcd_putsp(PSTR("ERROR Scheduler unexpected exit"));
 	for(;;){
-		lcd_putsp(PSTR("ERROR Scheduler unexpected exit"));
 	}
 	return;
 }
@@ -132,7 +135,35 @@ short main( void )
 void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running apart from the idle task.
-	lcd_init(GRAPHTEXT);
-	lcd_putsp(PSTR("Hook test"));
+	//lcd_init(GRAPHTEXT);
+	//lcd_putsp(PSTR("Hook test"));
 	//printN(xTaskGetTickCount());
 }
+
+// POWER button - This is configured as a low level interrupt
+ISR(PORTQ_INT0_vect) {
+    uint8_t i=0,j;
+    _delay_ms(10);
+    if(testbit(PORTQ.IN, ONBUTTON)) {
+        PORTC.OUTTGL = _BV(BUZZER1);    // Buzzer sound
+        setbit(Signals, update);         // Valid key
+        setbit(Signals, userinput);
+    }
+    while(testbit(PORTQ.IN, ONBUTTON)) {
+        _delay_ms(10);
+        i++;
+        if(i==200) {    // Key pressed for 2 seconds
+            cli();  // permanently disable interrupts
+            PORTC.OUT = _BV(BUZZER1);
+            // Shut down sound
+            for(i=0; i<40; i++) {
+		        for(j=i; j; j--) {
+                    _delay_ms(1);
+                }
+		        PORTC.OUTTGL = _BV(BUZZER1); // Toggle pin
+		        PORTC.OUTTGL = _BV(BUZZER2); // Toggle pin
+	        }
+            for(;;) PORTQ.OUT = 0;      // TURN OFF SYSTEM!!!
+        }
+    }
+}	

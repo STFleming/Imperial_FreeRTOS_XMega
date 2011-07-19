@@ -45,6 +45,11 @@ void prvPortSetup(void)
     PORTJ.DIR      = 0x00;  // ADS931 data
     PORTK.DIR      = 0xFF;  // LCD data
     PORTK.OUT      = 0x00;
+	PORTQ.DIR      = 0x04;  // On switch, voltage regulator control
+    PORTQ.OUT      = 0x04;  // Power ON voltage regulators
+    PORTQ.PIN3CTRL = 0x01;  // PQ3 will sense rising edges
+    PORTQ.INT0MASK = 0x08;  // PQ3 will be the interrupt 0 source
+    PORTQ.INTCTRL  = 0x01;  // PORTQ will generate low level interrupts
     PORTCFG.VPCTRLA = 0x18; // VP1 Map to PORTB, VP0 Map to PORTJ
     PORTCFG.VPCTRLB = 0x59; // VP3 Map to PORTF, VP2 Map to PORT
 //-------------------------------------------------------------------------------------------------

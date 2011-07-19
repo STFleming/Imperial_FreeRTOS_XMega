@@ -46,7 +46,7 @@ void vTaskOne( void *pvParameters )
 	{		
 			lcd_putsp(PSTR("1")); //Prints the tasks number to screen
 			positionLCDPrint(); //reentrant function uses a mutex lock.
-			vTaskDelay(1000);
+			vTaskDelay(300);
 	}
 }
 
@@ -60,7 +60,7 @@ void vTaskTwo(void *pvParameters)
 		lcd_putsp(PSTR("2"));		
 		positionLCDPrint();
 		PORTA.OUT = 0x10;
-		vTaskDelay(2000);
+		vTaskDelay(200);
 	}
 	
 }
@@ -74,7 +74,7 @@ void vTaskThree(void *pvParameters)
 	{
 		lcd_putsp(PSTR("3"));
 		positionLCDPrint();
-		vTaskDelay(3000);
+		vTaskDelay(100);
 	}
 	
 }
