@@ -80,7 +80,14 @@
 #include "AppTask.h"
 
 /*Demo application header files */
-#include "integer.h"
+#include "integer.h" //Tests math operations
+#include "PollQ.h"	//Tests Queues
+
+//-------------------------------------------------------------
+//		Priority Definitions
+//-------------------------------------------------------------
+#define mainQUEUE_POLL_PRIORITY			( tskIDLE_PRIORITY + 2 )
+#define mainERROR_TSK_PRIORITY			( tskIDLE_PRIORITY + 3 )
 
 //-------------------------------------------------------------
 //				Function Prototypes
@@ -137,8 +144,9 @@ short main( void )
 	//CreateTaskThree();
 	
 	/* Create the tasks defined within this file. */
-	xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
+	xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, mainERROR_TSK_PRIORITY, NULL );
 	vStartIntegerMathTasks( tskIDLE_PRIORITY ); //Test tasks used to determine reliability of mathematical calculations.
+	vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
 	//--------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
@@ -184,7 +192,7 @@ static volatile unsigned long ulDummyVariable = 3UL;
 	operating without error. */
 	for( ;; )
 	{
-		vTaskDelay( 100 );
+		vTaskDelay( 3 );
 
 		/* Perform a bit of 32bit maths to ensure the registers used by the 
 		integer tasks get some exercise. The result here is not important - 
@@ -202,19 +210,56 @@ static portBASE_TYPE xErrorHasOccurred = pdFALSE;
 	if( xAreIntegerMathsTaskStillRunning() != pdTRUE )
 	{
 		xErrorHasOccurred = pdTRUE;
+		
+		portENTER_CRITICAL();
+		lcd_goto(0,0);
+		lcd_putsp(PSTR("Math: FAIL"));
+		portEXIT_CRITICAL();
+	}
+	else
+	{
+		portENTER_CRITICAL();
+		lcd_goto(0,0);
+		lcd_putsp(PSTR("Math: PASS"));
+		portEXIT_CRITICAL();
 	}
 
+	if( xArePollingQueuesStillRunning() != pdTRUE )
+	{
+		xErrorHasOccurred = pdTRUE;
+		
+		portENTER_CRITICAL();
+		lcd_goto(0,1);
+		lcd_putsp(PSTR("Queue: FAIL"));
+		portEXIT_CRITICAL();
+	}
+	else
+	{
+		portENTER_CRITICAL();
+		lcd_goto(0,1);
+		lcd_putsp(PSTR("Queue: PASS"));
+		portEXIT_CRITICAL();
+	}
+	
 	if( xErrorHasOccurred == pdFALSE )
 	{
 		/* Toggle the LED if everything is okay so we know if an error occurs even if not
 		using console IO. */
-		lcd_init(GRAPHTEXT);
-		lcd_putsp(PSTR("Dandy."));
+		//lcd_init(GRAPHTEXT);
+		portENTER_CRITICAL();
+		lcd_goto(0,3);
+		lcd_putsp(PSTR("PASS"));
+		portEXIT_CRITICAL();
 	}
 	else
 	{
-		lcd_init(GRAPHTEXT);
-		lcd_putsp(PSTR("NOT dandy!"));
+		//lcd_init(GRAPHTEXT);
+		portENTER_CRITICAL();
+		lcd_goto(0,3);
+		lcd_putsp(PSTR("FAIL"));
+		portEXIT_CRITICAL();
+		
+		for(;;){} //Halt the RTOS.
 	}
 }
 /*-----------------------------------------------------------*/

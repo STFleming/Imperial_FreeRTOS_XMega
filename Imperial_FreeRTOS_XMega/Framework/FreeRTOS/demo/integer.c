@@ -97,7 +97,7 @@ Changes from V1.2.1
 #include "integer.h"
 
 #define intgSTACK_SIZE		( ( unsigned short ) 200 )
-#define intgNUMBER_OF_TASKS  ( 6 )
+#define intgNUMBER_OF_TASKS  ( 4 )
 
 /* Four tasks, each of which performs a different calculation on four byte 
 variables.  Each of the four is created twice. */
@@ -118,8 +118,8 @@ void vStartIntegerMathTasks( unsigned portBASE_TYPE uxPriority )
 	xTaskCreate( vCompeteingIntMathTask2, "IntMath2", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 1 ] ), uxPriority, NULL );
 	xTaskCreate( vCompeteingIntMathTask3, "IntMath3", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 2 ] ), uxPriority, NULL );
 	xTaskCreate( vCompeteingIntMathTask4, "IntMath4", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 3 ] ), uxPriority, NULL );
-	xTaskCreate( vCompeteingIntMathTask1, "IntMath5", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 4 ] ), uxPriority, NULL );
-	xTaskCreate( vCompeteingIntMathTask2, "IntMath6", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 5 ] ), uxPriority, NULL );
+//	xTaskCreate( vCompeteingIntMathTask1, "IntMath5", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 4 ] ), uxPriority, NULL );
+//	xTaskCreate( vCompeteingIntMathTask2, "IntMath6", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 5 ] ), uxPriority, NULL );
 //	xTaskCreate( vCompeteingIntMathTask3, "IntMath7", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 6 ] ), uxPriority, NULL );
 //	xTaskCreate( vCompeteingIntMathTask4, "IntMath8", intgSTACK_SIZE, ( void * ) &( usTaskCheck[ 7 ] ), uxPriority, NULL );
 }
