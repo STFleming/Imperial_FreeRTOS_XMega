@@ -210,7 +210,7 @@ static void prvSetupTimerInterrupt( void );
  */
 portSTACK_TYPE *pxPortInitialiseStack( portSTACK_TYPE *pxTopOfStack, pdTASK_CODE pxCode, void *pvParameters )
 {
-unsigned short usAddress;
+	unsigned short usAddress;
 
 	/* Place a few bytes of known values on the bottom of the stack. 
 	This is just useful for debugging. */
@@ -237,12 +237,16 @@ unsigned short usAddress;
 	//Edited for a 3 byte program counter.
 	*pxTopOfStack = ( portSTACK_TYPE ) ( usAddress & ( uint32_t ) 0x00ff );
      pxTopOfStack--;
-     usAddress >>= 8;	
-	
+
+/* OLD CODE    
+	 usAddress >>= 8;	
 	*pxTopOfStack = ( portSTACK_TYPE ) ( usAddress & ( unsigned short ) 0x00ff );
 	pxTopOfStack--;
-	
-
+*/
+//----------New Code-------------
+	*pxTopOfStack = 0x00;
+	pxTopOfStack--;
+//-------------------------------
 
 	/* Next simulate the stack as if after a call to portSAVE_CONTEXT().  
 	portSAVE_CONTEXT places the flags on the stack immediately after r0
@@ -385,7 +389,7 @@ void vPortYieldFromTick( void )
 	vTaskSwitchContext();
 	portRESTORE_CONTEXT();
 
-	asm volatile ( "ret" );
+	asm volatile ( "reti" ); //Changed for ATXMega devices.
 }
 /*-----------------------------------------------------------*/
 
@@ -435,6 +439,7 @@ ISR (TCC0_OVF_vect, ISR_NAKED)
 ISR (TCC0_OVF_vect, ISR_NAKED)
 	{
 		vTaskIncrementTick();
+		asm volatile ("reti"); //Added for ATXMega
 	}
 #endif
 

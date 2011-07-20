@@ -86,6 +86,24 @@
 //				Function Prototypes
 //-------------------------------------------------------------
 void vApplicationIdleHook( void );
+
+/*
+ * The task function for the "Check" task.
+ */
+static void vErrorChecks( void *pvParameters );
+
+/*
+ * Checks the unique counts of other tasks to ensure they are still operational.
+ * Flashes an LED if everything is okay. 
+ */
+static void prvCheckOtherTasksAreStillRunning( void );
+
+void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName );
+	/* This function is called immediately after task context is saved into stack. This is the case
+	 * when stack contains biggest amount of data. Hook function checks if there is a stack overflow
+	 * for the current (switched) task. Parameters could be used for debug output.
+	 * configCHECK_FOR_STACK_OVERFLOW should be defined as 1 to use StackOverflowHook.
+	 */
 //-------------------------------------------------------------
 
 //-------------------------------------------------------------
@@ -117,8 +135,13 @@ short main( void )
 	//CreateTaskOne();
 	//CreateTaskTwo();
 	//CreateTaskThree();
+	
+	/* Create the tasks defined within this file. */
+	xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 	vStartIntegerMathTasks( tskIDLE_PRIORITY ); //Test tasks used to determine reliability of mathematical calculations.
 	//--------------------------------------
+		
+	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
 	
 	vTaskStartScheduler();
 	
@@ -139,6 +162,62 @@ void vApplicationIdleHook( void )
 	//lcd_putsp(PSTR("Hook test"));
 	//printN(xTaskGetTickCount());
 }
+
+void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
+{
+	/* stop execution and report error */
+	lcd_init(GRAPHTEXT);
+	lcd_putsp(PSTR("STACK OVERFLOW"));
+	
+	//infinite loop to halt the execution.
+	for(;;){}
+}
+
+static void vErrorChecks( void *pvParameters )
+{
+static volatile unsigned long ulDummyVariable = 3UL;
+
+	/* The parameters are not used. */
+	( void ) pvParameters;
+
+	/* Cycle for ever, delaying then checking all the other tasks are still
+	operating without error. */
+	for( ;; )
+	{
+		vTaskDelay( 100 );
+
+		/* Perform a bit of 32bit maths to ensure the registers used by the 
+		integer tasks get some exercise. The result here is not important - 
+		see the demo application documentation for more info. */
+		ulDummyVariable *= 3;
+		
+		prvCheckOtherTasksAreStillRunning();
+	}
+}
+
+static void prvCheckOtherTasksAreStillRunning( void )
+{
+static portBASE_TYPE xErrorHasOccurred = pdFALSE;
+
+	if( xAreIntegerMathsTaskStillRunning() != pdTRUE )
+	{
+		xErrorHasOccurred = pdTRUE;
+	}
+
+	if( xErrorHasOccurred == pdFALSE )
+	{
+		/* Toggle the LED if everything is okay so we know if an error occurs even if not
+		using console IO. */
+		lcd_init(GRAPHTEXT);
+		lcd_putsp(PSTR("Dandy."));
+	}
+	else
+	{
+		lcd_init(GRAPHTEXT);
+		lcd_putsp(PSTR("NOT dandy!"));
+	}
+}
+/*-----------------------------------------------------------*/
 
 // POWER button - This is configured as a low level interrupt
 ISR(PORTQ_INT0_vect) {
