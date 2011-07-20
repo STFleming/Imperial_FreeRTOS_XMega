@@ -118,7 +118,7 @@ const unsigned portBASE_TYPE uxQueueSize = 10;
 
 	/* Create the queue used by the producer and consumer. */
 	xPolledQueue = xQueueCreate( uxQueueSize, ( unsigned portBASE_TYPE ) sizeof( unsigned short ) );
-
+	
 	/* Spawn the producer and consumer. */
 	xTaskCreate( vPolledQueueConsumer, "QConsNB", pollqSTACK_SIZE, ( void * ) &xPolledQueue, uxPriority, NULL );
 	xTaskCreate( vPolledQueueProducer, "QProdNB", pollqSTACK_SIZE, ( void * ) &xPolledQueue, uxPriority, NULL );
@@ -131,8 +131,6 @@ unsigned short usValue = 0, usLoop;
 xQueueHandle *pxQueue;
 const portTickType xDelay = ( portTickType ) 200 / portTICK_RATE_MS;
 const unsigned short usNumToProduce = 3;
-const char * const pcTaskStartMsg = "Polled queue producer started.\r\n";
-const char * const pcTaskErrorMsg = "Could not post on polled queue.\r\n";
 short sError = pdFALSE;
 
 	/* Queue a message for printing to say the task has started. */
@@ -146,7 +144,7 @@ short sError = pdFALSE;
 		for( usLoop = 0; usLoop < usNumToProduce; ++usLoop )
 		{
 			/* Send an incrementing number on the queue without blocking. */
-			if( xQueueSendToBack( *pxQueue, ( void * ) &usValue, ( portTickType ) 0 ) != pdPASS )
+			if( xQueueSendToFront( *pxQueue, ( void * ) &usValue, ( portTickType ) 0 ) != pdPASS)
 			{
 				/* We should never find the queue full - this is an error. */
 				//vPrintDisplayMessage( &pcTaskErrorMsg );
@@ -154,10 +152,13 @@ short sError = pdFALSE;
 			}
 			else
 			{
+				lcd_goto(0,7);lcd_putsp(PSTR("Mail posted."));
+				//xQueueSend(*pxQueue, (void *) &usValue, (portTickType) 200);
 				if( sError == pdFALSE )
 				{
 					/* If an error has ever been recorded we stop incrementing the 
 					check variable. */
+					
 					++sPollingProducerCount;
 				}
 
@@ -178,8 +179,6 @@ static void vPolledQueueConsumer( void *pvParameters )
 unsigned short usData, usExpectedValue = 0;
 xQueueHandle *pxQueue;
 const portTickType xDelay = ( portTickType ) 200 / portTICK_RATE_MS;
-const char * const pcTaskStartMsg = "Polled queue consumer started.\r\n";
-const char * const pcTaskErrorMsg = "Incorrect value received on polled queue.\r\n";
 short sError = pdFALSE;
 
 	/* Queue a message for printing to say the task has started. */
@@ -189,10 +188,16 @@ short sError = pdFALSE;
 	pxQueue = ( xQueueHandle * ) pvParameters;
 
 	for( ;; )
-	{		
+	{	
+		
+		//Simply if statement to check to make sure that the queue contains elements:
+		if(uxQueueMessagesWaiting(*pxQueue) == 0){lcd_goto(0,9);lcd_putsp(PSTR("NO mail."));}
+			else{lcd_goto(0,10);lcd_putsp(PSTR("Mail."));}
+		
 		/* Loop until the queue is empty. */
-		while( uxQueueMessagesWaiting( *pxQueue ) )
+		while( uxQueueMessagesWaiting( *pxQueue ) != 0 )
 		{
+			
 			if( xQueueReceive( *pxQueue, &usData, ( portTickType ) 0 ) == pdPASS )
 			{
 				if( usData != usExpectedValue )
@@ -201,9 +206,7 @@ short sError = pdFALSE;
 					occurred. */
 					//vPrintDisplayMessage( &pcTaskErrorMsg );
 					sError = pdTRUE;
-					
-					lcd_goto(0,6);
-					lcd_putsp(PSTR("Not expected value"));
+					lcd_goto(0,12);lcd_putsp(PSTR("Dear John.."));
 					
 					/* Catch-up to the value we received so our next expected value 
 					should again be correct. */
@@ -216,6 +219,7 @@ short sError = pdFALSE;
 						/* Only increment the check variable if no errors have 
 						occurred. */
 						++sPollingConsumerCount;
+					
 					}
 				}
 				++usExpectedValue;

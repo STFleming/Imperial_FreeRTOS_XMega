@@ -73,9 +73,9 @@
 #define configUSE_TICK_HOOK			0
 #define configCPU_CLOCK_HZ			( ( unsigned long ) 32000000 ) //8000000
 #define configTICK_RATE_HZ			( ( portTickType ) 1000 )
-#define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 4 )
+#define configMAX_PRIORITIES		( ( unsigned portBASE_TYPE ) 9 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 85 )
-#define configTOTAL_HEAP_SIZE		( (size_t ) ( 3800 ) ) //We have a total 4K bytes of internal memory.
+#define configTOTAL_HEAP_SIZE		( (size_t ) ( 3500) ) //We have a total 4K bytes of internal memory.
 #define configMAX_TASK_NAME_LEN		( 8 )
 #define configUSE_TRACE_FACILITY	0
 #define configUSE_16_BIT_TICKS		1

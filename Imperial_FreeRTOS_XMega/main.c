@@ -248,7 +248,7 @@ static portBASE_TYPE xErrorHasOccurred = pdFALSE;
 		//lcd_init(GRAPHTEXT);
 		portENTER_CRITICAL();
 		lcd_goto(0,3);
-		lcd_putsp(PSTR("PASS"));
+		lcd_putsp(PSTR("Result: PASS"));
 		portEXIT_CRITICAL();
 	}
 	else
@@ -256,10 +256,9 @@ static portBASE_TYPE xErrorHasOccurred = pdFALSE;
 		//lcd_init(GRAPHTEXT);
 		portENTER_CRITICAL();
 		lcd_goto(0,3);
-		lcd_putsp(PSTR("FAIL"));
+		lcd_putsp(PSTR("Result: FAIL"));
 		portEXIT_CRITICAL();
-		
-		for(;;){} //Halt the RTOS.
+
 	}
 }
 /*-----------------------------------------------------------*/

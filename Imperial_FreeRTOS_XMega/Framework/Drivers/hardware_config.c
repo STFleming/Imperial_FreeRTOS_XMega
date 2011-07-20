@@ -23,7 +23,7 @@ void prvPortSetup(void)
     PORTA.DIR      = 0x30;  // Encoder, LEDS, Volt Monitors, AWG, 2.0V
     PORTA.PIN6CTRL = 0x18;  // Pull up on pin PA6, sense both edges
     PORTA.PIN7CTRL = 0x18;  // Pull up on pin PA7, sense both edges
-    PORTA.OUT      = 0x10; // Turn off both LEDs   
+    PORTA.OUT      = 0x01; // Turn off both LEDs   
     PORTB.DIR      = 0x00;  // JTAG, CHA, CHB, Ext Trig, 2.0V
     PORTB.OUT      = 0x00;
     PORTC.DIR      = 0xBC;  // SPI, Buzzer, Encoder
