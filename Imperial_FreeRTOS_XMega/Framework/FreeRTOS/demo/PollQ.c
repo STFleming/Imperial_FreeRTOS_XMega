@@ -144,7 +144,7 @@ short sError = pdFALSE;
 		for( usLoop = 0; usLoop < usNumToProduce; ++usLoop )
 		{
 			/* Send an incrementing number on the queue without blocking. */
-			if( xQueueSendToFront( *pxQueue, ( void * ) &usValue, ( portTickType ) 0 ) != pdPASS)
+			if( xQueueSendToBack( *pxQueue, ( void * ) &usValue, ( portTickType ) 0 ) != pdPASS)
 			{
 				/* We should never find the queue full - this is an error. */
 				//vPrintDisplayMessage( &pcTaskErrorMsg );
@@ -152,8 +152,6 @@ short sError = pdFALSE;
 			}
 			else
 			{
-				lcd_goto(0,7);lcd_putsp(PSTR("Mail posted."));
-				//xQueueSend(*pxQueue, (void *) &usValue, (portTickType) 200);
 				if( sError == pdFALSE )
 				{
 					/* If an error has ever been recorded we stop incrementing the 
@@ -190,23 +188,19 @@ short sError = pdFALSE;
 	for( ;; )
 	{	
 		
-		//Simply if statement to check to make sure that the queue contains elements:
-		if(uxQueueMessagesWaiting(*pxQueue) == 0){lcd_goto(0,9);lcd_putsp(PSTR("NO mail."));}
-			else{lcd_goto(0,10);lcd_putsp(PSTR("Mail."));}
-		
 		/* Loop until the queue is empty. */
 		while( uxQueueMessagesWaiting( *pxQueue ) != 0 )
 		{
 			
 			if( xQueueReceive( *pxQueue, &usData, ( portTickType ) 0 ) == pdPASS )
 			{
+				
 				if( usData != usExpectedValue )
 				{
 					/* This is not what we expected to receive so an error has 
 					occurred. */
 					//vPrintDisplayMessage( &pcTaskErrorMsg );
 					sError = pdTRUE;
-					lcd_goto(0,12);lcd_putsp(PSTR("Dear John.."));
 					
 					/* Catch-up to the value we received so our next expected value 
 					should again be correct. */

@@ -192,7 +192,7 @@ static volatile unsigned long ulDummyVariable = 3UL;
 	operating without error. */
 	for( ;; )
 	{
-		vTaskDelay( 3 );
+		vTaskDelay(300);
 
 		/* Perform a bit of 32bit maths to ensure the registers used by the 
 		integer tasks get some exercise. The result here is not important - 
