@@ -75,6 +75,7 @@
 
 /* Hardware Drivers */
 #include "hardware_config.h"
+#include "Keypad.h"
 
 /*Task Header files and implementation files */
 #include "AppTask.h"
@@ -118,6 +119,7 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 // Global variables
 //-------------------------------------------------------------
 xSemaphoreHandle xMutexPrinting; //Handle for the Mutex
+int key;
 //-------------------------------------------------------------
 
 //-------------------------------------------------------------
@@ -144,11 +146,14 @@ short main( void )
 	//CreateTaskTwo();
 	//CreateTaskThree();
 	
-	/* Create the tasks defined within this file. */
-	xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, mainERROR_TSK_PRIORITY, NULL );
-	vStartIntegerMathTasks( tskIDLE_PRIORITY ); //Test tasks used to determine reliability of mathematical calculations.
-	vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
-	vStartRegTestTasks(); //Starts tasks used to test registers.
+	/* Create all the testing tasks */
+	//xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, mainERROR_TSK_PRIORITY, NULL );
+	//vStartIntegerMathTasks( tskIDLE_PRIORITY ); //Test tasks used to determine reliability of mathematical calculations.
+	//vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
+	//vStartRegTestTasks(); //Starts tasks used to test registers.
+	
+	/*Create the keypad task*/
+	vStartKeypadTask();
 	//--------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
@@ -158,7 +163,7 @@ short main( void )
 	lcd_putsp(PSTR("ERROR Scheduler unexpected exit"));
 	for(;;){
 	}
-	return;
+	return 0;
 }
 
 //-------------------------------------------------------------
@@ -167,16 +172,12 @@ short main( void )
 
 void vApplicationIdleHook( void )
 {
-	//This function is called when no other tasks are running apart from the idle task.
-	//lcd_init(GRAPHTEXT);
-	//lcd_putsp(PSTR("Hook test"));
-	//printN(xTaskGetTickCount());
+	//This function is called when no other tasks are running.
 }
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
 {
 	/* stop execution and report error */
-	lcd_init(GRAPHTEXT);
 	lcd_putsp(PSTR("STACK OVERFLOW"));
 	
 	//infinite loop to halt the execution.
