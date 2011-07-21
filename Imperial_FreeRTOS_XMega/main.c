@@ -82,6 +82,7 @@
 /*Demo application header files */
 #include "integer.h" //Tests math operations
 #include "PollQ.h"	//Tests Queues
+#include "regtest.h" //Register tests 
 
 //-------------------------------------------------------------
 //		Priority Definitions
@@ -147,6 +148,7 @@ short main( void )
 	xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, mainERROR_TSK_PRIORITY, NULL );
 	vStartIntegerMathTasks( tskIDLE_PRIORITY ); //Test tasks used to determine reliability of mathematical calculations.
 	vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
+	vStartRegTestTasks(); //Starts tasks used to test registers.
 	//--------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
@@ -207,7 +209,7 @@ static void prvCheckOtherTasksAreStillRunning( void )
 {
 static portBASE_TYPE xErrorHasOccurred = pdFALSE;
 
-	if( xAreIntegerMathsTaskStillRunning() != pdTRUE )
+	if( xAreIntegerMathsTaskStillRunning() != pdTRUE ) //if statement used to report math test errors.
 	{
 		xErrorHasOccurred = pdTRUE;
 		
@@ -224,7 +226,7 @@ static portBASE_TYPE xErrorHasOccurred = pdFALSE;
 		portEXIT_CRITICAL();
 	}
 
-	if( xArePollingQueuesStillRunning() != pdTRUE )
+	if( xArePollingQueuesStillRunning() != pdTRUE ) //if statement used to report queue errors.
 	{
 		xErrorHasOccurred = pdTRUE;
 		
@@ -241,21 +243,36 @@ static portBASE_TYPE xErrorHasOccurred = pdFALSE;
 		portEXIT_CRITICAL();
 	}
 	
+	if( xAreRegTestTasksStillRunning() != pdTRUE ) //If statement used to report regtest errors.
+	{
+		xErrorHasOccurred = pdTRUE;
+		
+		portENTER_CRITICAL();
+		lcd_goto(0,2);
+		lcd_putsp(PSTR("RegTest: FAIL"));
+		portEXIT_CRITICAL();
+	}
+	else
+	{		
+		portENTER_CRITICAL();
+		lcd_goto(0,2);
+		lcd_putsp(PSTR("RegTest: PASS"));
+		portEXIT_CRITICAL();
+	}
+	
 	if( xErrorHasOccurred == pdFALSE )
 	{
 		/* Toggle the LED if everything is okay so we know if an error occurs even if not
 		using console IO. */
-		//lcd_init(GRAPHTEXT);
 		portENTER_CRITICAL();
-		lcd_goto(0,3);
+		lcd_goto(0,5);
 		lcd_putsp(PSTR("Result: PASS"));
 		portEXIT_CRITICAL();
 	}
 	else
 	{
-		//lcd_init(GRAPHTEXT);
 		portENTER_CRITICAL();
-		lcd_goto(0,3);
+		lcd_goto(0,5);
 		lcd_putsp(PSTR("Result: FAIL"));
 		portEXIT_CRITICAL();
 
