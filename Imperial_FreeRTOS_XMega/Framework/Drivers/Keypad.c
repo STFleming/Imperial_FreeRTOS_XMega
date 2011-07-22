@@ -36,15 +36,16 @@ static void vKeypadTask( void *pvParameters )
 	
 for(;;)
 {	
-
-	PORTD.DIR = 0xF0;
-	for(i=3; i>0; i--) {
+//Initially start by reading the rows from PORTD.
+	PORTD.DIR = 0xF0; //Set the rows as the input.
+	for(i=3; i>0; i--) { //For loop used to debounce the switch.
 		vTaskDelay(1);
 		In = PORTD.IN;            	// Read PORTD
 		if(j!=In) { j=In; i++; }
 	}
+	
 //---------------Process Rows-----------------------------------
-	if	    (In==(0x07)) Row=3;
+	if	    (In==(0x07)) Row=3;	//Assign the values to the row.
 	else if	(In==(0x0B)) Row=2;
 	else if	(In==(0x0D)) Row=1;
 	else if	(In==(0x0E)) Row=0;
@@ -60,6 +61,7 @@ for(;;)
 	//-------------------------------------------------
 
 //------------Process Cols---------------------------------------
+//Assign the column value.
 	     if	(In==(0xB0)) Col=2;
 	else if	(In==(0xD0)) Col=1;
 	else if	(In==(0xE0)) Col=0;
@@ -67,8 +69,8 @@ for(;;)
 
 //---------------------------------------------------------------
 	
-	if(!(Row == 4 || Col == 4)) {key = Row*3+Col+1;} 
-	lcd_goto(0,2); printN(key);	
+	if(!(Row == 4 || Col == 4)) {key = Row*3+Col+1;} //Check to make sure that no more than one key is pressed or that no key is pressed.
+	lcd_goto(0,2); printN(key);	//Print the value of the key to the LCD screen, used in debugging.
 	vTaskDelay(10); //Delay the task for 10ms
 }
 	
