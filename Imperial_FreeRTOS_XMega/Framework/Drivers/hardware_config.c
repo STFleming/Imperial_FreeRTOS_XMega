@@ -23,13 +23,19 @@ void prvPortSetup(void)
     PORTA.DIR      = 0x30;  // Encoder, LEDS, Volt Monitors, AWG, 2.0V
     PORTA.PIN6CTRL = 0x18;  // Pull up on pin PA6, sense both edges
     PORTA.PIN7CTRL = 0x18;  // Pull up on pin PA7, sense both edges
-    PORTA.OUT      = 0x01; // Turn off both LEDs   
+    PORTA.OUT      = 0x00; // Turn off both LEDs   
     PORTB.DIR      = 0x00;  // JTAG, CHA, CHB, Ext Trig, 2.0V
     PORTB.OUT      = 0x00;
     PORTC.DIR      = 0xBC;  // SPI, Buzzer, Encoder
     PORTC.PIN0CTRL = 0x18;  // Pull up on pin PC0, sense both edges
     PORTC.PIN1CTRL = 0x18;  // Pull up on pin PC1, sense both edges
     PORTC.OUT      = 0x14;  // C-SS high, pulse buzzer
+	
+	PORTD.DIR      = 0xF0;  // Keypad and switches
+	PORTCFG.MPCMASK = 0xFF; // Configure all pins on PORTD the same way
+    PORTD.PIN0CTRL = 0x18;  // Pull up on pin PortD (Keypad and K2-K5 buttons)
+    PORTD.OUT      = 0x00;
+	
     PORTE.DIR      = 0xB9;  // SPI, TX, RX, SD_CD, TEST
     PORTE.PIN3CTRL = 0x40;  // Invert TX output
     PORTE.OUT      = 0x10;  // Deselect SD card

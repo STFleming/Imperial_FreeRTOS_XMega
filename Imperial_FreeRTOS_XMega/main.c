@@ -119,7 +119,7 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 // Global variables
 //-------------------------------------------------------------
 xSemaphoreHandle xMutexPrinting; //Handle for the Mutex
-int key;
+int key = 0;
 //-------------------------------------------------------------
 
 //-------------------------------------------------------------
