@@ -10,6 +10,4 @@
 
 void vStartKeypadTask(void);
 
-
-
 #endif /* KEYPAD_H_ */
