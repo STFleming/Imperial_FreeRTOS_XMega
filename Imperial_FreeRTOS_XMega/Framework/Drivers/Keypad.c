@@ -67,7 +67,7 @@ for(;;)
 
 //---------------------------------------------------------------
 	
-	key = Row*3+Col+1; 
+	if(!(Row == 4 || Col == 4)) {key = Row*3+Col+1;} 
 	lcd_goto(0,2); printN(key);	
 	vTaskDelay(10); //Delay the task for 10ms
 }
