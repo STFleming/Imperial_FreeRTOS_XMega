@@ -14,6 +14,8 @@ static void vLCDTask( void *pvParameters );
 void vPrintChar(int x, int y, char input);
 void vPrintString(int x, int y, char *input);
 void vPrintNumber(int x, int y, int number);
+void vClearScreen(void);
+void vClearPosition(int x, int y);
 
 
 #endif /* INCFILE1_H_ */

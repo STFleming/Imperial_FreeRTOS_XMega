@@ -20,7 +20,6 @@
 
 //TODO
 //----
-//Write clear screen and delete position function.
 //Add mutex locks around arrays.
 
 
@@ -89,3 +88,18 @@ void vPrintNumber(int x, int y, int number)
 								 //to print our new string.
 }
 
+void vClearScreen(void)
+{
+		for(int i=0; i<=15; i++) //Cycles through the entire 2D screen arrays checking for differences.
+		{
+			for(int j=0;j<=15;j++)	//If a difference is found then we print the difference to the screen.
+			{
+				new_screen[i][j] = ' ';
+			}
+		}
+}
+
+void vClearPosition(int x, int y)
+{
+	new_screen[x][y] = ' ';
+}
