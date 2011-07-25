@@ -13,7 +13,7 @@
 #include "task.h"
 
 //LCD Include file
-#include "sed1335.h"
+#include "LCDDriver.h"
 
 //---------------Variables-----------------
 extern int key;
@@ -70,7 +70,7 @@ for(;;)
 //---------------------------------------------------------------
 	
 	if(!(Row == 4 || Col == 4)) {key = Row*3+Col+1;} //Check to make sure that no more than one key is pressed or that no key is pressed.
-	lcd_goto(0,2); printN(key);	//Print the value of the key to the LCD screen, used in debugging.
+	vPrintChar(5,5,('0' + key)); //Prints the value of the key to the LCD display for debugging.
 	vTaskDelay(10); //Delay the task for 10ms
 }
 	

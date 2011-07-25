@@ -76,6 +76,7 @@
 /* Hardware Drivers */
 #include "hardware_config.h"
 #include "Keypad.h"
+#include "LCDDriver.h"
 
 /*Task Header files and implementation files */
 #include "AppTask.h"
@@ -154,6 +155,7 @@ short main( void )
 	
 	/*Create the keypad task*/
 	vStartKeypadTask();
+	vStartLCD();
 	//--------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
@@ -173,6 +175,9 @@ short main( void )
 void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running.
+	vPrintChar(0,1, 'H');
+	vPrintChar(1,1, 'e');
+	vPrintChar(2,1, 'y');
 }
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
