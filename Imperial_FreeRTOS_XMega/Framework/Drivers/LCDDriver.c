@@ -14,6 +14,13 @@
 //LCD Include file
 #include "sed1335.h"
 
+//TODO
+//----
+//Write print string function.
+//Write print number function.
+//Write clear screen and delete position function.
+//Add mutex locks around arrays.
+
 
 static volatile char new_screen[16][16] = {{0}}; //Set the screen arrays initially blank.
 static volatile char current_screen[16][16] = {{0}};
@@ -53,3 +60,4 @@ void vPrintChar(int x, int y, char input)
 	//Add the character to the new_screen array.
 	new_screen[x][y] = input;
 }
+
