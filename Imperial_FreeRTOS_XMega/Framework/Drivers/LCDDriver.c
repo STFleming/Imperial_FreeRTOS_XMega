@@ -9,6 +9,7 @@
 
 //General Header files for string operations
 #include <string.h>
+#include <stdlib.h>	// for itoa() call for print number.
 
 /* Scheduler include files. */
 #include "FreeRTOS.h"
@@ -80,5 +81,13 @@ void vPrintString(int x, int y, char *input)
 						   //string on the next line.
 	}
 	
+}
+
+void vPrintNumber(int x, int y, int number)
+{
+	char *strNumber;
+	itoa(number, strNumber, 10); //This function converts the number to a string.
+	vPrintString(x,y,strNumber); //We then use the already implemented PrintString function
+								 //to print our new string.
 }
 

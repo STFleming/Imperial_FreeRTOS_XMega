@@ -70,7 +70,7 @@ for(;;)
 //---------------------------------------------------------------
 	
 	if(!(Row == 4 || Col == 4)) {key = Row*3+Col+1;} //Check to make sure that no more than one key is pressed or that no key is pressed.
-	vPrintChar(5,5,('0' + key)); //Prints the value of the key to the LCD display for debugging.
+	vPrintNumber(0,0,key); //Prints the value of the key to the LCD display for debugging.
 	vTaskDelay(10); //Delay the task for 10ms
 }
 	

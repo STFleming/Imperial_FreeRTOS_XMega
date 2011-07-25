@@ -176,7 +176,7 @@ void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running.
 	
-	vPrintString(13,2, "Hello");
+	vPrintNumber(10,10, 4680);
 }
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
