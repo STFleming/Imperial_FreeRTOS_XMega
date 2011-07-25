@@ -25,8 +25,8 @@
 //Add mutex locks around arrays.
 
 
-static volatile char new_screen[15][15] = {{0}}; //Set the screen arrays initially blank.
-static volatile char current_screen[15][15] = {{0}};
+static volatile char new_screen[16][16] = {{0}}; //Set the screen arrays initially blank.
+static volatile char current_screen[16][16] = {{0}};
 
 void vStartLCD(void)
 {
@@ -75,9 +75,9 @@ void vPrintString(int x, int y, char *input)
 	{
 		new_screen[k][l] = input[i];
 		
-		if(k < 15) {k++;} //This if statement is used to check if the string has reached
+		if(k < 15) {k++;}  //This if statement is used to check if the string has reached
 		else {k = 0; l++;} //the end of the current line. If this is the case keep printing the 
-						  //string on the next line.
+						   //string on the next line.
 	}
 	
 }
