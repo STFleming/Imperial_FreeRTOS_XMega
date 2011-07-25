@@ -20,8 +20,6 @@
 
 //TODO
 //----
-//Write print string function.
-//Write print number function.
 //Write clear screen and delete position function.
 //Add mutex locks around arrays.
 
