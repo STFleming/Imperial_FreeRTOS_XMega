@@ -175,9 +175,8 @@ short main( void )
 void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running.
-	vPrintChar(0,1, 'H');
-	vPrintChar(1,1, 'e');
-	vPrintChar(2,1, 'y');
+	
+	vPrintString(13,2, "Hello");
 }
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )

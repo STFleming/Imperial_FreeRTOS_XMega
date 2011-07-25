@@ -12,6 +12,7 @@
 void vStartLCD(void);
 static void vLCDTask( void *pvParameters );
 void vPrintChar(int x, int y, char input);
+void vPrintString(int x, int y, char *input);
 
 
 #endif /* INCFILE1_H_ */
