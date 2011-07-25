@@ -78,9 +78,6 @@
 #include "Keypad.h"
 #include "LCDDriver.h"
 
-/*Task Header files and implementation files */
-#include "AppTask.h"
-
 /*Demo application header files */
 #include "integer.h" //Tests math operations
 #include "PollQ.h"	//Tests Queues
@@ -102,6 +99,9 @@ void vApplicationIdleHook( void );
  */
 static void vErrorChecks( void *pvParameters );
 
+//Function prototype used to describe test task for printing out functions.
+static void vPrintOutStuff(void *pvParameters);
+
 /*
  * Checks the unique counts of other tasks to ensure they are still operational.
  * Flashes an LED if everything is okay. 
@@ -119,7 +119,6 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 //-------------------------------------------------------------
 // Global variables
 //-------------------------------------------------------------
-xSemaphoreHandle xMutexPrinting; //Handle for the Mutex
 int key = 0;
 //-------------------------------------------------------------
 
@@ -134,20 +133,11 @@ short main( void )
 	lcd_init(GRAPHTEXT);
 	//lcd_putsp(PSTR("Trying out printing"));
 	
-	//-----------------------------------------------------
-	// Creating MUTEXs and Semaphores before Task Creation.
-	//-----------------------------------------------------
-	xMutexPrinting = xSemaphoreCreateMutex();
-	//-----------------------------------------------------
-	
 	//--------------------------------------
 	//Create Tasks before starting scheduler
 	//--------------------------------------
-	//CreateTaskOne();
-	//CreateTaskTwo();
-	//CreateTaskThree();
 	
-	/* Create all the testing tasks */
+	/* Create all the Demo test tasks */
 	//xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, mainERROR_TSK_PRIORITY, NULL );
 	//vStartIntegerMathTasks( tskIDLE_PRIORITY ); //Test tasks used to determine reliability of mathematical calculations.
 	//vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
@@ -156,6 +146,9 @@ short main( void )
 	/*Create the keypad task*/
 	vStartKeypadTask();
 	vStartLCD();
+	
+	/* Create tasks to test LCD printing and keypad */
+	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", configMINIMAL_STACK_SIZE + 256, NULL, tskIDLE_PRIORITY, NULL);
 	//--------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
@@ -175,11 +168,6 @@ short main( void )
 void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running.
-	
-	vPrintString(5,5, "Test");
-	vClearScreen();
-	vPrintNumber(10,10, 4680);
-	vClearPosition(11,10);
 }
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
@@ -189,6 +177,17 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 	
 	//infinite loop to halt the execution.
 	for(;;){}
+}
+
+static void vPrintOutStuff(void *pvParameters)
+{
+	for(;;)
+	{
+		vPrintString(3,5,"Hello World.");
+		vClearScreen();
+		vPrintString(0,2,"test.");
+		vTaskDelay(1000);
+	}
 }
 
 static void vErrorChecks( void *pvParameters )
