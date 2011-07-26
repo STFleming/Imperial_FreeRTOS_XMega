@@ -44,7 +44,7 @@ static void vLCDTask( void *pvParameters )
 	//For every difference found it updates the screen using print commands
 	//After that it updates the current screen array. 
 	int i, j;
-	
+
 	for(;;)
 	{
 		for(i=0; i<=15; i++) //Cycles through the entire 2D screen arrays checking for differences.

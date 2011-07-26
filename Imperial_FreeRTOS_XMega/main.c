@@ -183,10 +183,9 @@ static void vPrintOutStuff(void *pvParameters)
 {
 	for(;;)
 	{
-		vPrintString(3,5,"Hello World.");
-		vClearScreen();
-		vPrintString(0,2,"test.");
-		vPrintNumber(0,0,key); //Prints the value of the key to the LCD display for debugging.
+		vPrintNumber(0,0,key);
+		//vClearScreen();
+		//vPrintNumber(0,0,1000);
 		vTaskDelay(10);
 	}
 }

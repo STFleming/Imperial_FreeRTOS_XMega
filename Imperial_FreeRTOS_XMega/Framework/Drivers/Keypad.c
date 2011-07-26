@@ -15,6 +15,9 @@
 //LCD Include file
 #include "LCDDriver.h"
 
+//Define the stack size for the keypad driver task.
+#define configKEYPAD_STACK_SIZE 60
+
 //TODO
 //----
 //Add a Mutex around the key variable, provide getter and setter functions for it's value.
@@ -31,13 +34,13 @@ void vStartKeypadTask(void)
 {
 	//This function starts the keypad task with a configurable priority, should generally be given
 	//a low priority as it will infrequently check the keypad.
-	xTaskCreate( vKeypadTask, ( signed char * ) "Keypad", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
+	//xTaskCreate( vKeypadTask, ( signed char * ) "Keypad", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
+	xTaskCreate( vKeypadTask, ( signed char * ) "Keypad", configKEYPAD_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 }
 
 static void vKeypadTask( void *pvParameters )
 {   uint8_t In,j=0;
     uint8_t Row, Col=0, i;
-	
 for(;;)
 {	
 //Initially start by reading the rows from PORTD.
@@ -75,6 +78,7 @@ for(;;)
 	
 	if(!(Row == 4 || Col == 4)) {key = Row*3+Col+1;} //Check to make sure that no more than one key is pressed or that no key is pressed.
 	vTaskDelay(10); //Delay the task for 10ms
+
 }
 	
 }

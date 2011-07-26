@@ -83,7 +83,8 @@
 #define configQUEUE_REGISTRY_SIZE	0
 
 /* Debug */
-#define configCHECK_FOR_STACK_OVERFLOW	 1
+#define configCHECK_FOR_STACK_OVERFLOW	 1 //This is used to report if a stack overflow has occurred.
+#define INCLUDE_uxTaskGetStackHighWaterMark 1 //This is used to return the stack depth of a task by calling uxTaskGetStackHighWaterMark();
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 		1
