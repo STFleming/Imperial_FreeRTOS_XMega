@@ -29,8 +29,8 @@
 //	Variables
 //-----------------------------
 xSemaphoreHandle xMutexLCD;
-static volatile char new_screen[16][16] = {{0}}; //Set the screen arrays initially blank.
-static volatile char current_screen[16][16] = {{0}};
+static volatile char new_screen[16][16] = {{'\0'}}; //Set the screen arrays initially blank.
+static volatile char current_screen[16][16] = {{'\0'}};
 
 void vStartLCD(void)
 {
@@ -85,9 +85,7 @@ void vPrintString(int x, int y, char *input)
 	int k=x; int l=y;
 	
 	for(int i=0; i<=strlen(input); i++)
-	{
-		//new_screen[k][l] = input[i];
-		
+	{	
 		vPrintChar(k,l,input[i]);
 		
 		if(k < 15) {k++;}  //This if statement is used to check if the string has reached
@@ -111,14 +109,12 @@ void vClearScreen(void)
 		{
 			for(int j=0;j<=15;j++)	//If a difference is found then we print the difference to the screen.
 			{
-				//new_screen[i][j] = ' ';
-				vPrintChar(i,j, ' ');
+				vPrintChar(i,j, '\0');
 			}
 		}
 }
 
 void vClearPosition(int x, int y)
 {
-	//new_screen[x][y] = ' ';
-	vPrintChar(x,y,' ');
+	vPrintChar(x,y,'\0');
 }

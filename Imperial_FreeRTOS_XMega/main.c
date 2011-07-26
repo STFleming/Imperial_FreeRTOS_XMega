@@ -52,7 +52,7 @@
 */
 
 /*
- FreeRTOS to ATXMega port
+ FreeRTOS port for the XMegaLab which uses an atxmega128A1 chip.
 	Written by Shane Fleming
 	Imperial College London.
  */
@@ -148,7 +148,7 @@ short main( void )
 	vStartLCD();
 	
 	/* Create tasks to test LCD printing and keypad */
-	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", configMINIMAL_STACK_SIZE + 256, NULL, tskIDLE_PRIORITY, NULL);
+	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", configMINIMAL_STACK_SIZE + 256, NULL, tskIDLE_PRIORITY+1, NULL);
 	//--------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
@@ -186,7 +186,8 @@ static void vPrintOutStuff(void *pvParameters)
 		vPrintString(3,5,"Hello World.");
 		vClearScreen();
 		vPrintString(0,2,"test.");
-		vTaskDelay(1000);
+		vPrintNumber(0,0,key); //Prints the value of the key to the LCD display for debugging.
+		vTaskDelay(10);
 	}
 }
 
