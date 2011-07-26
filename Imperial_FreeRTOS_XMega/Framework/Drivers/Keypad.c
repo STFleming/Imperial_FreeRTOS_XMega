@@ -15,6 +15,10 @@
 //LCD Include file
 #include "LCDDriver.h"
 
+//TODO
+//----
+//Add a Mutex around the key variable, provide getter and setter functions for it's value.
+
 //---------------Variables-----------------
 extern int key;
 //-----------------------------------------
