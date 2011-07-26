@@ -23,7 +23,6 @@
 
 //TODO
 //----
-//Fix problem of mutex locks causing stack overflow.
 
 //-----------------------------
 //	Variables
