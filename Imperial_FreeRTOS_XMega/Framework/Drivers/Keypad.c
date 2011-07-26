@@ -16,7 +16,7 @@
 #include "LCDDriver.h"
 
 //Define the stack size for the keypad driver task.
-#define configKEYPAD_STACK_SIZE 60
+#define configKEYPAD_STACK_SIZE 99
 
 //TODO
 //----
@@ -77,7 +77,6 @@ for(;;)
 	
 	if(!(Row == 4 || Col == 4)) {key = Row*3+Col+1;} //Check to make sure that no more than one key is pressed or that no key is pressed.
 	vTaskDelay(10); //Delay the task for 10ms
-
 }
 	
 }

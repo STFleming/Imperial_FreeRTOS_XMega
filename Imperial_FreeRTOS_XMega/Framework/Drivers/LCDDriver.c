@@ -19,7 +19,7 @@
 //LCD Include file
 #include "sed1335.h"
 
-#define lcdSTACK_SIZE	( ( unsigned short ) 300)
+#define lcdSTACK_SIZE	( ( unsigned short ) 86)
 
 //TODO
 //----
@@ -31,9 +31,15 @@ xSemaphoreHandle xMutexLCD;
 static volatile char new_screen[16][16] = {{'\0'}}; //Set the screen arrays initially blank.
 static volatile char current_screen[16][16] = {{'\0'}};
 
+//-----------------------------
+//  Task Prototype
+//-----------------------------
+static void vLCDTask( void *pvParameters );
+
 void vStartLCD(void)
 {
 	//Starts the lcd driver task which is used to compare the two arrays at a regular interval and update.
+	lcd_init(GRAPHTEXT);
 	xMutexLCD = xSemaphoreCreateMutex();
 	xTaskCreate( vLCDTask, ( signed char * ) "LCDTask", lcdSTACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 }
@@ -44,7 +50,7 @@ static void vLCDTask( void *pvParameters )
 	//For every difference found it updates the screen using print commands
 	//After that it updates the current screen array. 
 	int i, j;
-
+	
 	for(;;)
 	{
 		for(i=0; i<=15; i++) //Cycles through the entire 2D screen arrays checking for differences.
@@ -63,7 +69,7 @@ static void vLCDTask( void *pvParameters )
 				xSemaphoreGive(xMutexLCD); //give back the mutex for the new_screen array.
 			}
 		}
-		vTaskDelay(100);
+		vTaskDelay(10);
 	}
 }
 
@@ -96,8 +102,10 @@ void vPrintString(int x, int y, char *input)
 
 void vPrintNumber(int x, int y, int number)
 {
-	char *strNumber;
+	char *strNumber = NULL;
+	portENTER_CRITICAL();
 	itoa(number, strNumber, 10); //This function converts the number to a string.
+	portEXIT_CRITICAL();
 	vPrintString(x,y,strNumber); //We then use the already implemented PrintString function
 								 //to print our new string.
 }

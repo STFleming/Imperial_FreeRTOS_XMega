@@ -129,10 +129,6 @@ short main( void )
 {
 	prvSetupHardware();
 	
-	//LCD printing tests to tryout drivers.
-	lcd_init(GRAPHTEXT);
-	//lcd_putsp(PSTR("Trying out printing"));
-	
 	//--------------------------------------
 	//Create Tasks before starting scheduler
 	//--------------------------------------
@@ -148,7 +144,7 @@ short main( void )
 	vStartLCD();
 	
 	/* Create tasks to test LCD printing and keypad */
-	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", configMINIMAL_STACK_SIZE + 256, NULL, tskIDLE_PRIORITY+1, NULL);
+	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 86, NULL, tskIDLE_PRIORITY+1, NULL);
 	//--------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
@@ -183,12 +179,13 @@ static void vPrintOutStuff(void *pvParameters)
 {
 	for(;;)
 	{
+		vClearScreen();
 		vPrintNumber(0,0,key);
-		//vClearScreen();
-		//vPrintNumber(0,0,1000);
-		vTaskDelay(10);
+		vPrintNumber(0,15, uxTaskGetStackHighWaterMark(NULL));
+		vTaskDelay(100);
 	}
 }
+
 
 static void vErrorChecks( void *pvParameters )
 {
