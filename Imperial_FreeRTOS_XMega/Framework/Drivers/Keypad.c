@@ -34,7 +34,6 @@ void vStartKeypadTask(void)
 {
 	//This function starts the keypad task with a configurable priority, should generally be given
 	//a low priority as it will infrequently check the keypad.
-	//xTaskCreate( vKeypadTask, ( signed char * ) "Keypad", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 	xTaskCreate( vKeypadTask, ( signed char * ) "Keypad", configKEYPAD_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
 }
 
