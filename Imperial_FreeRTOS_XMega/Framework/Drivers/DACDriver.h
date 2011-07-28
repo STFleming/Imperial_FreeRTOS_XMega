@@ -16,5 +16,6 @@
 //void vStartDAC(portTickType conversion_time);
 void portDACconfiguration(void);
 void vStartDAC(portTickType conversion_time);
+void SetDACOut(uint16_t input);
 
 #endif /* DACDRIVER_H_ */

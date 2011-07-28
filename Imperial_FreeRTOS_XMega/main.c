@@ -143,7 +143,7 @@ short main( void )
 	/*Create the keypad task*/
 	vStartKeypadTask();
 	vStartLCD();
-	vStartDAC(1);
+	vStartDAC(5);
 	
 	/* Create tasks to test LCD printing and keypad */
 	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 86, NULL, tskIDLE_PRIORITY+1, NULL);
@@ -179,11 +179,12 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 
 static void vPrintOutStuff(void *pvParameters)
 {
+	uint16_t increment = 0;
 	for(;;)
 	{
-		vPrintNumber(0,0,GetLastKeyPressed());
-		vPrintNumber(0,15, uxTaskGetStackHighWaterMark(NULL));
-		vTaskDelay(100);
+		SetDACOut(increment);
+		increment+=20;
+		vTaskDelay(20);
 	}
 }
 
