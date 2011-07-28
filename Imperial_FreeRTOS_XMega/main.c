@@ -146,7 +146,7 @@ short main( void )
 	vStartDAC(5);
 	
 	/* Create tasks to test LCD printing and keypad */
-	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 86, NULL, tskIDLE_PRIORITY+1, NULL);
+	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
 	//--------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
@@ -166,6 +166,7 @@ short main( void )
 void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running.
+	SetDACOut(4095);
 }
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
@@ -182,9 +183,8 @@ static void vPrintOutStuff(void *pvParameters)
 	uint16_t increment = 0;
 	for(;;)
 	{
-		SetDACOut(increment);
-		increment+=20;
-		vTaskDelay(20);
+		vPrintNumber(0,0,GetLastKeyPressed());
+		vTaskDelay(2);
 	}
 }
 

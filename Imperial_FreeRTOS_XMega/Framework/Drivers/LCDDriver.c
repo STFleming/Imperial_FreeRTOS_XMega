@@ -6,6 +6,7 @@
  */ 
 //Include the header file:
 #include "LCDDriver.h"
+#include "DACDriver.h"
 
 //General Header files for string operations
 #include <string.h>
@@ -53,6 +54,7 @@ static void vLCDTask( void *pvParameters )
 	
 	for(;;)
 	{
+		SetDACOut(0);
 		for(i=0; i<=15; i++) //Cycles through the entire 2D screen arrays checking for differences.
 		{
 			for(j=0;j<=15;j++)	//If a difference is found then we print the difference to the screen.

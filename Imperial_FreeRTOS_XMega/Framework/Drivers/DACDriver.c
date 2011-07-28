@@ -47,7 +47,6 @@ static void vDACTask(void *pvParameters)
 {
 	for(;;)
 	{
-		vPrintNumber(0,5, dac_out);
 		//Place data in the high and low bytes of the DAC data registers.
 		DACA.CH0DATA = dac_out;  //0x0FFF = 4095 -> -2V, 0x07FF = 2047 -> 0v, 0x000 = 0 -> 2v.
 		

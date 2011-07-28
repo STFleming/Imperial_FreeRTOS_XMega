@@ -12,11 +12,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-//LCD Include file
+//LCD & DAC Include files for debugging
 #include "LCDDriver.h"
+#include "DACDriver.h"
 
 //Define the stack size for the keypad driver task.
-#define configKEYPAD_STACK_SIZE 99
+#define configKEYPAD_STACK_SIZE  99
 
 //---------------Variables-----------------
 int key = 13; //There is no key 13, if this has been returned it indicates that no key has been pressed.
@@ -30,7 +31,7 @@ void vStartKeypadTask(void)
 {
 	//This function starts the keypad task with a configurable priority, should generally be given
 	//a low priority as it will infrequently check the keypad.
-	xTaskCreate( vKeypadTask, ( signed char * ) "Keypad", configKEYPAD_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
+	xTaskCreate( vKeypadTask, ( signed char * ) "Keypad", configKEYPAD_STACK_SIZE, NULL, tskIDLE_PRIORITY+2, NULL );
 }
 
 static void vKeypadTask( void *pvParameters )
@@ -38,6 +39,7 @@ static void vKeypadTask( void *pvParameters )
     uint8_t Row, Col=0, i;
 for(;;)
 {	
+	SetDACOut(2047);
 //Initially start by reading the rows from PORTD.
 	PORTD.DIR = 0xF0; //Set the rows as the input.
 	for(i=3; i>0; i--) { //For loop used to debounce the switch.
