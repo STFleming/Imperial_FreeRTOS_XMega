@@ -77,6 +77,7 @@
 #include "hardware_config.h"
 #include "Keypad.h"
 #include "LCDDriver.h"
+#include "DACDriver.h"
 
 /*Demo application header files */
 #include "integer.h" //Tests math operations
@@ -119,7 +120,7 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 //-------------------------------------------------------------
 // Global variables
 //-------------------------------------------------------------
-int key = 0;
+
 //-------------------------------------------------------------
 
 //-------------------------------------------------------------
@@ -142,6 +143,7 @@ short main( void )
 	/*Create the keypad task*/
 	vStartKeypadTask();
 	vStartLCD();
+	vStartDAC(1);
 	
 	/* Create tasks to test LCD printing and keypad */
 	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 86, NULL, tskIDLE_PRIORITY+1, NULL);
@@ -179,8 +181,7 @@ static void vPrintOutStuff(void *pvParameters)
 {
 	for(;;)
 	{
-		vClearScreen();
-		vPrintNumber(0,0,key);
+		vPrintNumber(0,0,GetLastKeyPressed());
 		vPrintNumber(0,15, uxTaskGetStackHighWaterMark(NULL));
 		vTaskDelay(100);
 	}

@@ -9,5 +9,6 @@
 #define KEYPAD_H_
 
 void vStartKeypadTask(void);
+int GetLastKeyPressed(void);
 
 #endif /* KEYPAD_H_ */

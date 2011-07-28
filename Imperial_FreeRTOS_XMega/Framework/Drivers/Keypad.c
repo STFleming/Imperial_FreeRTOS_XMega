@@ -18,12 +18,8 @@
 //Define the stack size for the keypad driver task.
 #define configKEYPAD_STACK_SIZE 99
 
-//TODO
-//----
-//Add a Mutex around the key variable, provide getter and setter functions for it's value.
-
 //---------------Variables-----------------
-extern int key;
+int key = 13; //There is no key 13, if this has been returned it indicates that no key has been pressed.
 //-----------------------------------------
 
 //--------------Prototypes-----------------
@@ -79,4 +75,9 @@ for(;;)
 	vTaskDelay(10); //Delay the task for 10ms
 }
 	
+}
+
+int GetLastKeyPressed(void)
+{
+	return key;
 }
