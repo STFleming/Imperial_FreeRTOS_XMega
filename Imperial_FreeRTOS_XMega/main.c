@@ -145,7 +145,7 @@ short main( void )
 	vStartKeypadTask();
 	vStartLCD();
 	vStartDAC(5);
-	vStartADC(5);
+	vStartADC(100);
 	
 	/* Create tasks to test LCD printing and keypad */
 	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
@@ -168,7 +168,6 @@ short main( void )
 void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running.
-	SetDACOut(4095);
 }
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
@@ -185,7 +184,10 @@ static void vPrintOutStuff(void *pvParameters)
 	uint16_t increment = 0;
 	for(;;)
 	{
-		vPrintNumber(0,0,GetLastKeyPressed());
+		vPrintNumber(0,0,GetLastKeyPressed()*310);
+		
+		SetDACOut(GetLastKeyPressed()*310); //Vary the DAC output for debugging the ADC.
+		
 		vTaskDelay(2);
 	}
 }

@@ -28,7 +28,8 @@ uint16_t dataChannelA = 0; //This is used to store the value collected from chan
 uint16_t dataChannelB = 0; //This is used to store the value collected from channelB.
 
 //Prototype for task code body.
-static void vADCTask(void *pvParameters);
+static void vADCChannelA(void *pvParameters);
+static void vADCChannelB(void *pvParameters);
 
 void vStartADC(portTickType adcPeriod)
 {
@@ -38,8 +39,18 @@ void vStartADC(portTickType adcPeriod)
 	//Port H is used to set the v/div and power for the ADC.
 	PORTH.OUT = 0x2D; //This sets the ADC on and sets each channel to 0.5v/div.
 	
+	//Setup Clock for ADC.
+	TCF1.CTRLB = 0x11; //CCAEN override, frequency mode.
+	TCF0.CTRLB = 0x83; //CCDEN override, Single Slop PWM
+	TCF0.PER = 100;
+	TCF0.CCD = 199;
+	TCF1.CCA = 99; //ADC clock
+	TCF0.CTRLA = 0x01; //Enable Timer, Prescaler: clk/1
+	TCF1.CTRLA = 0x01; //Enable Timer, Prescaler: clk/1
+	
 	//Start the task to periodically read the ADC values and store them.
-	xTaskCreate(vADCTask, (signed char*) "ADC", adcSTACK_SIZE, (void *) adcPeriod, tskIDLE_PRIORITY+2, NULL);
+	xTaskCreate(vADCChannelA, (signed char*) "ADCA", adcSTACK_SIZE, (void *) adcPeriod, tskIDLE_PRIORITY+1, NULL);
+	xTaskCreate(vADCChannelB, (signed char*) "ADCB", adcSTACK_SIZE, (void *) adcPeriod, tskIDLE_PRIORITY+1, NULL);
 	
 	//Setup of ADC completed.
 }
@@ -47,22 +58,33 @@ void vStartADC(portTickType adcPeriod)
 //------------------------------------------------------
 // Define Task Functionality.
 //------------------------------------------------------
-static void vADCTask(void *pvParameters)
+static void vADCChannelA(void *pvParameters)
 {
 	for(;;)
 	{
-		//Check the first Channel and read it's value.
-		PORTF.DIR |= 0x04; //This sets Pin 3 on PORTF High used to select channel A.
-		dataChannelA = PORTJ.IN; //This collects the ADC inputs from PORTJ.
-		
-		PORTF.DIR ^= 0x04; //This sets pin 3 on PORTF to 0. Used to select channel B.
+		PORTF.OUT ^= 0x04; //This sets pin 3 on PORTF to 0. Used to select channel B.
 		dataChannelB = PORTJ.IN; //Collects the ADC inputs from PORTJ.
 		
 		//Use LCD Print Number functions to print their output and debug.
 		vPrintNumber(0,6, dataChannelA);
+		
+		//Delay the task based on the value inputted by the user.
+		vTaskDelay((portTickType)pvParameters);
+	}
+}
+
+static void vADCChannelB(void *pvParameters)
+{
+	for(;;)
+	{
+		//Check the first Channel and read it's value.
+		PORTF.OUT |= 0x04; //This sets Pin 3 on PORTF High used to select channel A.
+		dataChannelA = PORTJ.IN; //This collects the ADC inputs from PORTJ.
+		
 		vPrintNumber(0,7, dataChannelB);
 		
 		//Delay the task based on the value inputted by the user.
 		vTaskDelay((portTickType)pvParameters);
+		
 	}
 }

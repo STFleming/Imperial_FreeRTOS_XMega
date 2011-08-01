@@ -39,7 +39,6 @@ static void vKeypadTask( void *pvParameters )
     uint8_t Row, Col=0, i;
 for(;;)
 {	
-	SetDACOut(2047);
 //Initially start by reading the rows from PORTD.
 	PORTD.DIR = 0xF0; //Set the rows as the input.
 	for(i=3; i>0; i--) { //For loop used to debounce the switch.
