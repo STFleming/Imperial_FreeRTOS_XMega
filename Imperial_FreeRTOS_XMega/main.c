@@ -78,6 +78,7 @@
 #include "Keypad.h"
 #include "LCDDriver.h"
 #include "DACDriver.h"
+#include "ADCDriver.h"
 
 /*Demo application header files */
 #include "integer.h" //Tests math operations
@@ -144,6 +145,7 @@ short main( void )
 	vStartKeypadTask();
 	vStartLCD();
 	vStartDAC(5);
+	vStartADC(5);
 	
 	/* Create tasks to test LCD printing and keypad */
 	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);

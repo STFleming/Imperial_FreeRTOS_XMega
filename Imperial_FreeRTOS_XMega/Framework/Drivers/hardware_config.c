@@ -46,9 +46,8 @@ void prvPortSetup(void)
     PORTF.PIN3CTRL = 0x80;  // Slew rate control
     PORTF.PIN4CTRL = 0x80;  // Slew rate control
     PORTF.OUT      = 0x21;  // Deselect Serial RAM, backlight on
-    PORTH.DIR      = 0xFF;  // PDN, \OE, SELA, SELB
+	PORTH.DIR      = 0xFF;  // PDN, \OE, SELA, SELB //Used for setting up the ADC.
     PORTH.OUT      = 0x80;  // Power Down ADS931
-    PORTJ.DIR      = 0x00;  // ADS931 data
     PORTK.DIR      = 0xFF;  // LCD data
     PORTK.OUT      = 0x00;
 	PORTQ.DIR      = 0x04;  // On switch, voltage regulator control

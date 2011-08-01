@@ -4,6 +4,8 @@
  * Created: 28/07/2011 11:41:46
  *  Author: sf306
  */ 
+/*AVR official header files */
+#include <avr/io.h>
 
 //Include files.
 #include "DACDriver.h"
@@ -12,18 +14,17 @@
 /* Scheduler include files. */
 #include "FreeRTOS.h"
 #include "task.h"
-
-/*AVR official header files */
-#include <avr/io.h>
+#include "semphr.h"
 
 //Define task stack size.
 #define dacSTACK_SIZE	( ( unsigned short ) 120)
 
-//Prototype for task code body.
-static void vDACTask(void *pvParameters);
 
 //Variables used within driver.
 uint16_t dac_out = 0;
+
+//Prototype for task code body.
+static void vDACTask(void *pvParameters);
 
 void vStartDAC(portTickType conversion_time)
 {
