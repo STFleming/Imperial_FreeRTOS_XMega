@@ -188,7 +188,6 @@ static void vPrintOutStuff(void *pvParameters)
 	{
 		vPrintNumber(0,0,GetLastKeyPressed()*100);
 		
-		SetDACOut(GetLastKeyPressed()*100); //Vary the DAC output for debugging the ADC.
 		//SetDACOut();
 		
 		vTaskDelay(2);

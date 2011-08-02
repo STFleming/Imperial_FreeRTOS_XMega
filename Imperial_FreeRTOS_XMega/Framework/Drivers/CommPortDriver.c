@@ -11,6 +11,7 @@
 //Other driver includes
 #include "LCDDriver.h"
 #include "Keypad.h"
+#include "DACDriver.h" //For debugging.
 
 /* Scheduler include files. */
 #include "FreeRTOS.h"
@@ -37,7 +38,6 @@ void vStartCommPort(void)
 	// Initialize USART - We are using USARTE0
     USARTE0.BAUDCTRLA = 0x17;   // BSCALE = -6, BSEL = 1047
     USARTE0.BAUDCTRLB = 0xA4;   // ==> 115211 bps (~115.2kbps)
-    USARTE0.CTRLA = 0x10;       // RX is low level interrupt
     USARTE0.CTRLC = 0x03;       // Async, No Parity, 1 stop bit, 8 data bits
     USARTE0.CTRLB = 0x18;       // Enable RX and TX
 	
@@ -49,15 +49,15 @@ static void vCommTask(void *pvParameters)
 { //This function implements the CommTask
 	for(;;)
 	{	
-		if ( (USARTE0.STATUS & (1 << 7)) >= 1) //Check the RXCIF flag to see if any data is ready to be read.
+		if ( (USARTE0.STATUS & (1 << 7)) == 128) //Check the RXCIF flag to see if any data is ready to be read.
 		{
 			recieved_char = USARTE0.DATA;
 		}
-		
-		if ((USARTE0.STATUS & (1 << 5)) >= 1) //There is room to transmit another character.Checking the DREIF flag
+
+		if ((USARTE0.STATUS & (1 << 5)) == 32) //There is room to transmit another character.Checking the DREIF flag
 		{
-			USARTE0.DATA = 'P'; //Keep transmitting P over and over again for debugging purposes.
-		/*	switch(GetLastKeyPressed())
+			//USARTE0.DATA = 'P'; //Keep transmitting P over and over again for debugging purposes.
+			switch(GetLastKeyPressed())
 			{
 				case 1 :
 						USARTE0.DATA = '1';
@@ -72,9 +72,9 @@ static void vCommTask(void *pvParameters)
 				default :
 						USARTE0.DATA = 'P';     
 			}
-		 */
+		 
 		}
-		
+				
 		vPrintChar(0,12,recieved_char);
 		
 		vTaskDelay(1);
