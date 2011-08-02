@@ -59,11 +59,11 @@ static void vADCTask(void *pvParameters)
 		//Check the first Channel and read it's value.
 		PORTF.OUT ^= 0x08; //This sets pin 3 on PORTF to 0. Used to select channel A.
 		vTaskDelay(1); //Need to give the output from the ADC time to settle.
-		dataChannelA = PORTJ.IN; //This collects the ADC inputs from PORTJ.
+		dataChannelA = (uint16_t) (PORTJ.IN - 62)*(100/3); //This collects the ADC inputs from PORTJ.
 
 		PORTF.OUT |= 0x08; //This sets Pin 3 on PORTF High used to select channel B.
 		vTaskDelay(1); //Need to give the output from the ADC time to settle.
-		dataChannelB = PORTJ.IN; //Collects the ADC inputs from PORTJ.
+		dataChannelB = (uint16_t) (PORTJ.IN - 62)*(100/3); //Collects the ADC inputs from PORTJ.
 		
 		//Use LCD Print Number functions to print their output and debug.
 		vPrintNumber(0,6, dataChannelA);

@@ -184,9 +184,10 @@ static void vPrintOutStuff(void *pvParameters)
 	uint16_t increment = 0;
 	for(;;)
 	{
-		vPrintNumber(0,0,GetLastKeyPressed()*310);
+		vPrintNumber(0,0,GetLastKeyPressed()*100);
 		
-		SetDACOut(GetLastKeyPressed()*310); //Vary the DAC output for debugging the ADC.
+		SetDACOut(GetLastKeyPressed()*100); //Vary the DAC output for debugging the ADC.
+		//SetDACOut();
 		
 		vTaskDelay(2);
 	}
