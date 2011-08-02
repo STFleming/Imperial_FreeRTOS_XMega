@@ -9,7 +9,7 @@
 #ifndef COMMPORTDRIVER_H_
 #define COMMPORTDRIVER_H_
 
-
+void vStartCommPort(void); 
 
 
 

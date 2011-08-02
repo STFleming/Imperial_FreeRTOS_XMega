@@ -36,12 +36,6 @@ void prvPortSetup(void)
     PORTD.PIN0CTRL = 0x18;  // Pull up on pin PortD (Keypad and K2-K5 buttons)
     PORTD.OUT      = 0x00;
 	
-    PORTE.DIR      = 0xB9;  // SPI, TX, RX, SD_CD, TEST
-    PORTE.PIN3CTRL = 0x40;  // Invert TX output
-    PORTE.OUT      = 0x10;  // Deselect SD card
-    PORTE.PIN1CTRL = 0x02;  // PE1 will sense falling edges
-    PORTE.INTCTRL  = 0x01;  // PORTE will generate low level interrupts
-    PORTE.INT0MASK = 0x02;  // PE1 will be the interrupt source
     PORTF.DIR      = 0xFB;  // LCD WR, LCD RD, SRAM CS, ADCCLK, CHSEL, SD_WP, LCD A0, LCD BKLT
     PORTF.PIN3CTRL = 0x80;  // Slew rate control
     PORTF.PIN4CTRL = 0x80;  // Slew rate control

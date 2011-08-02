@@ -79,6 +79,7 @@
 #include "LCDDriver.h"
 #include "DACDriver.h"
 #include "ADCDriver.h"
+#include "CommPortDriver.h"
 
 /*Demo application header files */
 #include "integer.h" //Tests math operations
@@ -146,6 +147,7 @@ short main( void )
 	vStartLCD();
 	vStartDAC(5);
 	vStartADC(100);
+	vStartCommPort();
 	
 	/* Create tasks to test LCD printing and keypad */
 	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
