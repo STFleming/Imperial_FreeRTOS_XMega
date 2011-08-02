@@ -10,6 +10,7 @@
 
 //Other driver includes
 #include "LCDDriver.h"
+#include "Keypad.h"
 
 /* Scheduler include files. */
 #include "FreeRTOS.h"
@@ -47,25 +48,34 @@ void vStartCommPort(void)
 static void vCommTask(void *pvParameters)
 { //This function implements the CommTask
 	for(;;)
-	{
-		//Debugging, Printing the status bits of the USART flags
-		vPrintNumber(4,10, (USARTE0.STATUS & (1 << 7))); //RXCIF
-		vPrintNumber(8,10, (USARTE0.STATUS & (1 << 5))); //DREIF
-		
-		if ( (USARTE0.STATUS & (1 << 7)) == 1 ) //Check the RXCIF flag to see if any data is ready to be read.
+	{	
+		if ( (USARTE0.STATUS & (1 << 7)) >= 1) //Check the RXCIF flag to see if any data is ready to be read.
 		{
 			recieved_char = USARTE0.DATA;
-			vPrintString(0,11, "Recieving");
 		}
 		
-		if ((USARTE0.STATUS & (1 << 5)) == 1) //There is room to transmit another character.Checking the DREIF flag
+		if ((USARTE0.STATUS & (1 << 5)) >= 1) //There is room to transmit another character.Checking the DREIF flag
 		{
-			USARTE0.DATA = 'P'; //Keep transmitting P over and over again for debugging purposes.
-			vPrintString(0,11, "Transmitting");
+			//USARTE0.DATA = 'P'; //Keep transmitting P over and over again for debugging purposes.
+			switch(GetLastKeyPressed())
+			{
+				case 1 :
+						USARTE0.DATA = '1';
+				case 2 :
+						USARTE0.DATA = '2';
+				case 3 :
+						USARTE0.DATA = '3';
+				case 4 :
+						USARTE0.DATA = '4';
+				case 13 :
+						USARTE0.DATA = 'O'; 
+				default :
+						USARTE0.DATA = 'P';     
+			}
 		}
 		
 		vPrintChar(0,12,recieved_char);
 		
-		vTaskDelay(1);
+		vTaskDelay(10);
 	}
 }
