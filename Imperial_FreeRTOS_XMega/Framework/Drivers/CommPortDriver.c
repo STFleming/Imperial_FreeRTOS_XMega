@@ -56,8 +56,8 @@ static void vCommTask(void *pvParameters)
 		
 		if ((USARTE0.STATUS & (1 << 5)) >= 1) //There is room to transmit another character.Checking the DREIF flag
 		{
-			//USARTE0.DATA = 'P'; //Keep transmitting P over and over again for debugging purposes.
-			switch(GetLastKeyPressed())
+			USARTE0.DATA = 'P'; //Keep transmitting P over and over again for debugging purposes.
+		/*	switch(GetLastKeyPressed())
 			{
 				case 1 :
 						USARTE0.DATA = '1';
@@ -72,10 +72,11 @@ static void vCommTask(void *pvParameters)
 				default :
 						USARTE0.DATA = 'P';     
 			}
+		 */
 		}
 		
 		vPrintChar(0,12,recieved_char);
 		
-		vTaskDelay(10);
+		vTaskDelay(1);
 	}
 }
