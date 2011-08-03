@@ -5,6 +5,14 @@
  *  Author: sf306
  */ 
 
+/* To connect the board to hyper terminal for comm port testing use the following settings
+   baud rate: 115200.
+   Parity: None.
+   Stop bits: 1bits.
+   Data bits: 8 bits.
+   Flow Control: None.
+     */
+
 //Include files----------------------------------------
 #include "CommPortDriver.h"
 
@@ -24,6 +32,7 @@
 //		Global Variables.
 //-----------------------------------------------
 char recieved_char = '/0';
+char *transmitionString;
 
 //Prototype for driver task implementation code.
 static void vCommTask(void *pvParameters);
@@ -42,11 +51,12 @@ void vStartCommPort(void)
     USARTE0.CTRLB = 0x18;       // Enable RX and TX
 	
 	//Start the driver task for the Comm Port.
-	xTaskCreate(vCommTask, (signed char*) "COMM", commSTACK_SIZE, NULL, tskIDLE_PRIORITY+2, NULL);
+	xTaskCreate(vCommTask, (signed char*) "COMM", commSTACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 }
 
 static void vCommTask(void *pvParameters)
 { //This function implements the CommTask
+	int tempKeyPress = 0;
 	for(;;)
 	{	
 		if ( (USARTE0.STATUS & (1 << 7)) == 128) //Check the RXCIF flag to see if any data is ready to be read.
@@ -57,26 +67,41 @@ static void vCommTask(void *pvParameters)
 		if ((USARTE0.STATUS & (1 << 5)) == 32) //There is room to transmit another character.Checking the DREIF flag
 		{
 			//USARTE0.DATA = 'P'; //Keep transmitting P over and over again for debugging purposes.
-			switch(GetLastKeyPressed())
+			if(GetLastKeyPressed() != tempKeyPress)
 			{
-				case 1 :
-						USARTE0.DATA = '1';
-				case 2 :
-						USARTE0.DATA = '2';
-				case 3 :
-						USARTE0.DATA = '3';
-				case 4 :
-						USARTE0.DATA = '4';
-				case 13 :
-						USARTE0.DATA = 'O'; 
-				default :
-						USARTE0.DATA = 'P';     
-			}
+				switch(GetLastKeyPressed())
+				{
+					case 1 :
+							USARTE0.DATA = '1';
+							break;
+					case 2 :
+							USARTE0.DATA = '2';
+							break;
+					case 3 :
+							USARTE0.DATA = '3';
+							break;
+					case 4 :
+							USARTE0.DATA = '4';
+							break;
+					case 13 :
+							USARTE0.DATA = 'O'; 
+							break;
+					default :
+							USARTE0.DATA = 'P';     
+				}
+			}			
+		  
 		 
 		}
-				
+		
+		tempKeyPress = GetLastKeyPressed();		
 		vPrintChar(0,12,recieved_char);
 		
-		vTaskDelay(1);
+		vTaskDelay(10);
 	}
+}
+
+void SendCommString(char* input)
+{
+	transmitionString = input;
 }
