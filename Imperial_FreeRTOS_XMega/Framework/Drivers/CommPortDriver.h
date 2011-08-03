@@ -10,6 +10,7 @@
 #define COMMPORTDRIVER_H_
 
 void vStartCommPort(void); 
+void SendCommString(char* input);
 
 
 

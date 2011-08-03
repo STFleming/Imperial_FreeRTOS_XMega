@@ -183,14 +183,11 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 
 static void vPrintOutStuff(void *pvParameters)
 {
-	uint16_t increment = 0;
 	for(;;)
 	{
-		vPrintNumber(0,0,GetLastKeyPressed()*100);
 		
-		//SetDACOut();
-		
-		vTaskDelay(2);
+		SendCommString("Hello");
+		vTaskDelay(1000);
 	}
 }
 

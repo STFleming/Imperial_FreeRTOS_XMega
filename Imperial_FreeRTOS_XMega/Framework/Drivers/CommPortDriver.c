@@ -16,6 +16,9 @@
 //Include files----------------------------------------
 #include "CommPortDriver.h"
 
+//C include files
+#include <string.h>
+
 //Other driver includes
 #include "LCDDriver.h"
 #include "Keypad.h"
@@ -24,22 +27,26 @@
 /* Scheduler include files. */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
 
 //Define driver task stack size.
 #define commSTACK_SIZE	( ( unsigned short ) 256)
 
+
 //-----------------------------------------------
-//		Global Variables.
+//				Global Variables.
 //-----------------------------------------------
-char recieved_char = '/0';
-char *transmitionString;
+char recieved_char = '\0';
+xQueueHandle xCommPortQueue; //Handle for the queue used to buffer information to the serial port dispatcher task.
+
 
 //Prototype for driver task implementation code.
 static void vCommTask(void *pvParameters);
 
-
 void vStartCommPort(void)
 {
+	const unsigned portBASE_TYPE uxBufferSize = 10;
+	
 	//Setup the atxmega ports
 	PORTE.DIR      = 0xB9;  //  TX, RX
     PORTE.PIN3CTRL = 0x40;  // Invert TX output
@@ -52,11 +59,14 @@ void vStartCommPort(void)
 	
 	//Start the driver task for the Comm Port.
 	xTaskCreate(vCommTask, (signed char*) "COMM", commSTACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+	//Start the queue for the comm port.
+	xCommPortQueue = xQueueCreate(uxBufferSize, ( unsigned portBASE_TYPE ) sizeof(char));
 }
 
 static void vCommTask(void *pvParameters)
 { //This function implements the CommTask
-	int tempKeyPress = 0;
+char tempCharacter; //Used for passing the character to the output from the buffer.
+
 	for(;;)
 	{	
 		if ( (USARTE0.STATUS & (1 << 7)) == 128) //Check the RXCIF flag to see if any data is ready to be read.
@@ -64,37 +74,15 @@ static void vCommTask(void *pvParameters)
 			recieved_char = USARTE0.DATA;
 		}
 
-		if ((USARTE0.STATUS & (1 << 5)) == 32) //There is room to transmit another character.Checking the DREIF flag
+		while( uxQueueMessagesWaiting( xCommPortQueue ) != 0 )
 		{
-			//USARTE0.DATA = 'P'; //Keep transmitting P over and over again for debugging purposes.
-			if(GetLastKeyPressed() != tempKeyPress)
+			if ((USARTE0.STATUS & (1 << 5)) == 32) //There is room to transmit another character.Checking the DREIF flag
 			{
-				switch(GetLastKeyPressed())
-				{
-					case 1 :
-							USARTE0.DATA = '1';
-							break;
-					case 2 :
-							USARTE0.DATA = '2';
-							break;
-					case 3 :
-							USARTE0.DATA = '3';
-							break;
-					case 4 :
-							USARTE0.DATA = '4';
-							break;
-					case 13 :
-							USARTE0.DATA = 'O'; 
-							break;
-					default :
-							USARTE0.DATA = 'P';     
-				}
-			}			
-		  
-		 
-		}
+				xQueueReceive(xCommPortQueue, &tempCharacter, 0);
+				USARTE0.DATA = tempCharacter;	
+			}
+		}			
 		
-		tempKeyPress = GetLastKeyPressed();		
 		vPrintChar(0,12,recieved_char);
 		
 		vTaskDelay(10);
@@ -103,5 +91,8 @@ static void vCommTask(void *pvParameters)
 
 void SendCommString(char* input)
 {
-	transmitionString = input;
+	for (int i = 0; i <= strlen(input); i++)
+	{
+		xQueueSendToBack(xCommPortQueue, (void *)&input[i], 100); //Adds the characters to the queue in order, waits up to 100 ticks if the queue is full.
+	}
 }
