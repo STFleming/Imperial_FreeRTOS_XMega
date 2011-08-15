@@ -7,6 +7,7 @@
 //Include the header file:
 #include "LCDDriver.h"
 #include "DACDriver.h"
+#include "CommPortDriver.h"
 
 //General Header files for string operations
 #include <string.h>
@@ -71,6 +72,7 @@ static void vLCDTask( void *pvParameters )
 			}
 		}
 		vTaskDelay(10);
+		//vPrintNumber(0,1, uxTaskGetStackHighWaterMark(NULL)); //Debugging for finding stack high water mark.
 	}
 }
 

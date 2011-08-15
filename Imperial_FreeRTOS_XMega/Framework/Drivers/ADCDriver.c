@@ -19,7 +19,7 @@
 #include "task.h"
 
 //Define ADC driver task stack size.
-#define adcSTACK_SIZE  ( ( unsigned short ) 256)
+#define adcSTACK_SIZE  ( ( unsigned short ) 71)
 
 //-----------------------------------------
 //		Global Variables.
@@ -66,10 +66,11 @@ static void vADCTask(void *pvParameters)
 		dataChannelB = (uint16_t) (PORTJ.IN - 62)*(100/3); //Collects the ADC inputs from PORTJ.
 		
 		//Use LCD Print Number functions to print their output and debug.
-		vPrintNumber(0,6, dataChannelA);
-		vPrintNumber(0,7, dataChannelB);
+		//vPrintNumber(0,6, dataChannelA);
+		//vPrintNumber(0,7, dataChannelB);
 		
 		//Delay the task based on the value inputted by the user.
 		vTaskDelay((portTickType)pvParameters);
+		//vPrintNumber(0,3, uxTaskGetStackHighWaterMark(NULL)); //Debugging for finding stack high water mark.
 	}
 }

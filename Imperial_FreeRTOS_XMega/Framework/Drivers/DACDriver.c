@@ -17,7 +17,7 @@
 #include "semphr.h"
 
 //Define task stack size.
-#define dacSTACK_SIZE	( ( unsigned short ) 120)
+#define dacSTACK_SIZE	( ( unsigned short ) 94)
 
 
 //Variables used within driver.
@@ -52,6 +52,7 @@ static void vDACTask(void *pvParameters)
 		DACA.CH0DATA = dac_out;  //0x0FFF = 4095 -> -2V, 0x07FF = 2047 -> 0v, 0x000 = 0 -> 2v.
 		
 		vTaskDelay((portTickType)pvParameters);
+		//vPrintNumber(0,2, uxTaskGetStackHighWaterMark(NULL)); //Debugging for finding stack high water mark.
 	}
 }
 

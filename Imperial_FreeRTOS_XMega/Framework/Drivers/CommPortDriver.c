@@ -30,7 +30,7 @@
 #include "queue.h"
 
 //Define driver task stack size.
-#define commSTACK_SIZE	( ( unsigned short ) 256)
+#define commSTACK_SIZE	( ( unsigned short ) 97)
 
 
 //-----------------------------------------------
@@ -45,7 +45,7 @@ static void vCommTask(void *pvParameters);
 
 void vStartCommPort(void)
 {
-	const unsigned portBASE_TYPE uxBufferSize = 10;
+	const unsigned portBASE_TYPE uxBufferSize = 50;
 	
 	//Setup the atxmega ports
 	PORTE.DIR      = 0xB9;  //  TX, RX
@@ -83,9 +83,8 @@ char tempCharacter; //Used for passing the character to the output from the buff
 			}
 		}			
 		
-		vPrintChar(0,12,recieved_char);
-		
 		vTaskDelay(10);
+		//vPrintNumber(0,4, uxTaskGetStackHighWaterMark(NULL)); //Debugging for finding stack high water mark.
 	}
 }
 

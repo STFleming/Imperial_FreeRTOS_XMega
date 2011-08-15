@@ -74,6 +74,8 @@ for(;;)
 	
 	if(!(Row == 4 || Col == 4)) {key = Row*3+Col+1;} //Check to make sure that no more than one key is pressed or that no key is pressed.
 	vTaskDelay(10); //Delay the task for 10ms
+	
+	//vPrintNumber(0,0, uxTaskGetStackHighWaterMark(NULL)); //Debugging for finding stack high water mark.
 }
 	
 }

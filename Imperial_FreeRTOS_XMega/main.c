@@ -185,9 +185,7 @@ static void vPrintOutStuff(void *pvParameters)
 {
 	for(;;)
 	{
-		
-		SendCommString("Hello");
-		vTaskDelay(1000);
+		vTaskDelay(1500);
 	}
 }
 
@@ -221,98 +219,40 @@ static portBASE_TYPE xErrorHasOccurred = pdFALSE;
 	if( xAreIntegerMathsTaskStillRunning() != pdTRUE ) //if statement used to report math test errors.
 	{
 		xErrorHasOccurred = pdTRUE;
-		
-		portENTER_CRITICAL();
-		lcd_goto(0,0);
-		lcd_putsp(PSTR("Math: FAIL"));
-		portEXIT_CRITICAL();
+		vPrintString(0,0, "Math: FAIL");
 	}
 	else
 	{
-		portENTER_CRITICAL();
-		lcd_goto(0,0);
-		lcd_putsp(PSTR("Math: PASS"));
-		portEXIT_CRITICAL();
+		vPrintString(0,0, "Math: PASS");
 	}
 
 	if( xArePollingQueuesStillRunning() != pdTRUE ) //if statement used to report queue errors.
 	{
 		xErrorHasOccurred = pdTRUE;
-		
-		portENTER_CRITICAL();
-		lcd_goto(0,1);
-		lcd_putsp(PSTR("Queue: FAIL"));
-		portEXIT_CRITICAL();
+		vPrintString(0,1, "Queue: FAIL");
 	}
 	else
 	{
-		portENTER_CRITICAL();
-		lcd_goto(0,1);
-		lcd_putsp(PSTR("Queue: PASS"));
-		portEXIT_CRITICAL();
+		vPrintString(0,1, "Queue: PASS");
 	}
 	
 	if( xAreRegTestTasksStillRunning() != pdTRUE ) //If statement used to report regtest errors.
 	{
 		xErrorHasOccurred = pdTRUE;
-		
-		portENTER_CRITICAL();
-		lcd_goto(0,2);
-		lcd_putsp(PSTR("RegTest: FAIL"));
-		portEXIT_CRITICAL();
+		vPrintString(0,2, "RegTest: FAIL");
 	}
 	else
-	{		
-		portENTER_CRITICAL();
-		lcd_goto(0,2);
-		lcd_putsp(PSTR("RegTest: PASS"));
-		portEXIT_CRITICAL();
+	{
+		vPrintString(0,2, "RegTest: PASS");		
 	}
 	
 	if( xErrorHasOccurred == pdFALSE )
 	{
-		/* Toggle the LED if everything is okay so we know if an error occurs even if not
-		using console IO. */
-		portENTER_CRITICAL();
-		lcd_goto(0,5);
-		lcd_putsp(PSTR("Result: PASS"));
-		portEXIT_CRITICAL();
+		vPrintString(0,5, "Result: PASS");
 	}
 	else
 	{
-		portENTER_CRITICAL();
-		lcd_goto(0,5);
-		lcd_putsp(PSTR("Result: FAIL"));
-		portEXIT_CRITICAL();
-
+		vPrintString(0,5, "Result: FAIL");
 	}
 }
 /*-----------------------------------------------------------*/
-
-// POWER button - This is configured as a low level interrupt
-ISR(PORTQ_INT0_vect) {
-    uint8_t i=0,j;
-    _delay_ms(10);
-    if(testbit(PORTQ.IN, ONBUTTON)) {
-        PORTC.OUTTGL = _BV(BUZZER1);    // Buzzer sound
-        setbit(Signals, update);         // Valid key
-        setbit(Signals, userinput);
-    }
-    while(testbit(PORTQ.IN, ONBUTTON)) {
-        _delay_ms(10);
-        i++;
-        if(i==200) {    // Key pressed for 2 seconds
-            cli();  // permanently disable interrupts
-            PORTC.OUT = _BV(BUZZER1);
-            // Shut down sound
-            for(i=0; i<40; i++) {
-		        for(j=i; j; j--) {
-                    _delay_ms(1);
-                }
-		        PORTC.OUTTGL = _BV(BUZZER1); // Toggle pin
-		        PORTC.OUTTGL = _BV(BUZZER2); // Toggle pin
-	        }
-            for(;;) PORTQ.OUT = 0;      // TURN OFF SYSTEM!!!
-        }
-    }
-}	
