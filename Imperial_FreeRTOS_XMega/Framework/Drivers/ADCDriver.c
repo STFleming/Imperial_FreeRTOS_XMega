@@ -74,3 +74,13 @@ static void vADCTask(void *pvParameters)
 		//vPrintNumber(0,3, uxTaskGetStackHighWaterMark(NULL)); //Debugging for finding stack high water mark.
 	}
 }
+
+uint16_t getADCchannelAdata(void)
+{
+	return dataChannelA;
+}
+
+uint16_t getADCchannelBdata(void)
+{
+	return dataChannelA;
+}

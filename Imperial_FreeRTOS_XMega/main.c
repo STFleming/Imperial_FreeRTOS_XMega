@@ -60,6 +60,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <avr/sleep.h>
 
 #ifdef GCC_MEGA_AVR
 	/* EEPROM routines used only with the WinAVR compiler. */
@@ -170,6 +171,10 @@ short main( void )
 void vApplicationIdleHook( void )
 {
 	//This function is called when no other tasks are running.
+	set_sleep_mode(SLEEP_MODE_IDLE);
+	sleep_enable();
+	sleep_cpu();
+	sleep_disable();
 }
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName )
@@ -185,7 +190,11 @@ static void vPrintOutStuff(void *pvParameters)
 {
 	for(;;)
 	{
-		vTaskDelay(1500);
+		vPrintNumber(0,0, GetLastKeyPressed());
+		SetDACOut(100);
+		SendCommString("Hello World.");
+		vPrintNumber(0,6, getADCchannelBdata());
+		vTaskDelay(150);
 	}
 }
 

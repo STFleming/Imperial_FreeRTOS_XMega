@@ -14,6 +14,8 @@
 
 
 void vStartADC(portTickType adcPeriod);
+uint16_t getADCchannelAdata(void);
+uint16_t getADCchannelBdata(void);
 
 
 #endif /* ADCDRIVER_H_ */
