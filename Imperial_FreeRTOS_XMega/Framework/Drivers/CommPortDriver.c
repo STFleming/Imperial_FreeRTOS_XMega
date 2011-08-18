@@ -92,6 +92,6 @@ void SendCommString(char* input)
 {
 	for (int i = 0; i <= strlen(input); i++)
 	{
-		xQueueSendToBack(xCommPortQueue, (void *)&input[i], 100); //Adds the characters to the queue in order, waits up to 100 ticks if the queue is full.
+		xQueueSendToBack(xCommPortQueue, (void *)&input[i], 0); //Adds the characters to the queue in order, waits up to 100 ticks if the queue is full.
 	}
 }

@@ -121,21 +121,26 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 //-------------------------------------------------------------
 
 //-------------------------------------------------------------
-// Global variables
-//-------------------------------------------------------------
-
-//-------------------------------------------------------------
-
-//-------------------------------------------------------------
 //					Main Function 
 //-------------------------------------------------------------
-short main( void )
+void main()
 {
+	//Initial Hardware setup.
 	prvSetupHardware();
 	
-	//--------------------------------------
-	//Create Tasks before starting scheduler
-	//--------------------------------------
+	//Start driver tasks.
+	vStartKeypadTask(); //Keypad driver
+	vStartLCD(); //LCD driver
+	vStartDAC(5); //DAC driver, takes sample rate as an input arguement as RTOS ticks (portTickType)
+	vStartADC(100); //ADC driver, taks sample rate as an input arguement as RTOS ticks (portTickType)
+	vStartCommPort(); //Starts the comm port driver.
+	
+	//-----------------------------------------------------------------------------------------
+	//			TASK CREATION - This must be performed before the scheduler starts
+	//-----------------------------------------------------------------------------------------
+	
+	/* Create tasks to test LCD printing and keypad */
+	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
 	
 	/* Create all the Demo test tasks */
 	//xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, mainERROR_TSK_PRIORITY, NULL );
@@ -143,25 +148,23 @@ short main( void )
 	//vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
 	//vStartRegTestTasks(); //Starts tasks used to test registers.
 	
-	/*Create the keypad task*/
-	vStartKeypadTask();
-	vStartLCD();
-	vStartDAC(5);
-	vStartADC(100);
-	vStartCommPort();
-	
-	/* Create tasks to test LCD printing and keypad */
-	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
-	//--------------------------------------
+	//------------------------------------------------------------------------------------------
 		
 	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
-	
+
+	//------------------------------------------------------
+	//		SCHEDULER STARTS HERE
+	//------------------------------------------------------	
 	vTaskStartScheduler();
+	//-----------------------------------------------------
 	
+	//-----------------------------------------------------
+	//	UNEXPECTED SCHEDULER END - REPORT ERROR
+	//-----------------------------------------------------
 	lcd_putsp(PSTR("ERROR Scheduler unexpected exit"));
 	for(;;){
 	}
-	return 0;
+	//-----------------------------------------------------
 }
 
 //-------------------------------------------------------------
@@ -173,7 +176,7 @@ void vApplicationIdleHook( void )
 	//This function is called when no other tasks are running.
 	set_sleep_mode(SLEEP_MODE_IDLE);
 	sleep_enable();
-	sleep_cpu();
+	//sleep_cpu();
 	sleep_disable();
 }
 
@@ -194,7 +197,7 @@ static void vPrintOutStuff(void *pvParameters)
 		vPrintNumber(0,0, GetLastKeyPressed());
 		i+=200;
 		SetDACOut(i);
-		SendCommString("Hello World.");
+		SendCommString("Hey Dr Clarke \r\n");
 		vPrintNumber(0,6, getADCchannelBdata());
 		vTaskDelay(150);
 	}
