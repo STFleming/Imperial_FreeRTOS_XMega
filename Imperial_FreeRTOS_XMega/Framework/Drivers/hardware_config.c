@@ -12,10 +12,13 @@ void prvSetupHardware(void)
 {
 	prvPowerReduction();
 	prvHoldPowerOn();
-	prvPortSetup();
 	prvClockSetup();
 	prvLEDSetup();
 	prvBuzzerSetup();
+	
+	//Setup the virtual port registers.
+	prvSetupVirtualPortA(VPPORTB, VPPORTJ);
+	prvSetupVirtualPortB(VPPORTF, VPPORTK);
 }
 
 //--------------------------------------//
@@ -52,16 +55,6 @@ void vPulseBuzzer(void)
 }
 //-----------------------------------------------------------------------------
 
-void prvPortSetup(void)
-{	
-//-----------------------------------------------------------------------------------
-// Peripheral and port setup
-//-----------------------------------------------------------------------------------	 
-    PORTCFG.VPCTRLA = 0x18; // VP1 Map to PORTB, VP0 Map to PORTJ
-    PORTCFG.VPCTRLB = 0x59; // VP3 Map to PORTF, VP2 Map to PORT
-//-------------------------------------------------------------------------------------------------
-}
-
 void prvHoldPowerOn(void)
 {
 	//This function is used to configure the ports so that the Board power stays on
@@ -69,6 +62,19 @@ void prvHoldPowerOn(void)
     PORTQ.OUT      = 0x04;  // Power ON voltage regulators
 }
 
+//----------------Virtual Port Setup Functions-------------------------------
+void prvSetupVirtualPortA(uint8_t VPone, uint8_t VPtwo)
+{
+	uint8_t temp = ((VPone << 4) | VPtwo ); //combine the two nibbles containing the ports into a single byte.
+	PORTCFG.VPCTRLA = temp;
+}
+
+void prvSetupVirtualPortB(uint8_t VPone, uint8_t VPtwo)
+{
+	uint8_t temp = ((VPone << 4) | VPtwo ); //combine the two nibbles containing the ports into a single byte.
+	PORTCFG.VPCTRLB = temp;
+}
+//---------------------------------------------------------------------------
 
 void prvPowerReduction(void)
 {

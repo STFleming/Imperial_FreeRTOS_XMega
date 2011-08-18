@@ -64,6 +64,23 @@
 #define PORTE_TC0_SWITCH 0 //Switches timer/counter0 PORTE on or off.
 #define PORTF_TC0_SWITCH 0 //Switches timer/counter0 PORTF on or off.
 
+//Define virtual port mapping directives
+#define VPPORTA 0x00 //PORTA
+#define VPPORTB 0x01 //PORTB
+#define VPPORTC 0x02 //PORTC
+#define VPPORTD 0x03 //PORTD
+#define VPPORTE 0x04 //PORTE
+#define VPPORTF 0x05 //PORTF
+#define VPPORTG 0x06 //PORTG
+#define VPPORTH 0x07 //PORTH
+#define VPPORTJ 0x08 //PORTJ
+#define VPPORTK 0x09 //PORTK
+#define VPPORTL 0x0A //PORTL
+#define VPPORTM 0x0B //PORTM
+#define VPPORTN 0x0C //PORTN
+#define VPPORTP 0x0D //PORTP
+#define VPPORTQ 0x0E //PORTQ
+#define VPPORTR 0x0F //PORTR
 
 // PORT DEFINITIONS
 #define ONBUTTON    3   // PORTQ
@@ -78,7 +95,6 @@
 #define userinput   3       // User input received
 
 void prvSetupHardware(void);
-void prvPortSetup(void);
 void prvHoldPowerOn(void);
 void prvClockSetup(void);
 void prvPowerReduction(void);
@@ -90,6 +106,8 @@ void GRNLEDOFF(void);
 void REDLEDOFF(void);
 void prvBuzzerSetup(void);
 void vPulseBuzzer(void);
+void prvSetupVirtualPortA(uint8_t VPone, uint8_t VPtwo);
+void prvSetupVirtualPortB(uint8_t VPone, uint8_t VPtwo);
 
 
 
