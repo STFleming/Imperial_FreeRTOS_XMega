@@ -10,5 +10,6 @@
 
 void vStartKeypadTask(void);
 int GetLastKeyPressed(void);
+void vKeypadPortSetup(void);
 
 #endif /* KEYPAD_H_ */

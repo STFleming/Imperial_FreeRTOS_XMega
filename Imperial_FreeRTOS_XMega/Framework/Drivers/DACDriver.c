@@ -37,7 +37,7 @@ void portDACconfiguration(void)
 	//This function includes the configuration setup for the DAC registers.
 	//------------------PORTA Config---------------------------------------
 	//The AWG output is connected to PORTA pin 2 we need to setup this pin and the 2V reference pin.
-	PORTA.DIR = 0x30; //Set the pin directions for PORTA.
+	PORTA.DIR |= (0x01 << 3); //Set the pin directions for PORTA.
 	//------------------DACA Config-----------------------------------------
 	DACA.CTRLA = 0x05; //This selects channel 0, and enables the entire DAC block.
 	DACA.CTRLB = 0x00; //Set the DACA into single channel operation.

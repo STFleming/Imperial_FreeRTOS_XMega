@@ -10,6 +10,7 @@
 #define INCFILE1_H_
 
 void vStartLCD(void);
+void prvLCDPortSetup(void);
 void vPrintChar(int x, int y, char input);
 void vPrintString(int x, int y, char *input);
 void vPrintNumber(int x, int y, int number);

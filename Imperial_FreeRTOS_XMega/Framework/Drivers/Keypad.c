@@ -31,6 +31,7 @@ void vStartKeypadTask(void)
 {
 	//This function starts the keypad task with a configurable priority, should generally be given
 	//a low priority as it will infrequently check the keypad.
+	vKeypadPortSetup();
 	xTaskCreate( vKeypadTask, ( signed char * ) "Keypad", configKEYPAD_STACK_SIZE, NULL, tskIDLE_PRIORITY+2, NULL );
 }
 
@@ -78,6 +79,14 @@ for(;;)
 	//vPrintNumber(0,0, uxTaskGetStackHighWaterMark(NULL)); //Debugging for finding stack high water mark.
 }
 	
+}
+
+void vKeypadPortSetup(void)
+{
+	PORTD.DIR      = 0xF0;  // Keypad and switches
+	PORTCFG.MPCMASK = 0xFF; // Configure all pins on PORTD the same way
+    PORTD.PIN0CTRL = 0x18;  // Pull up on pin PortD (Keypad and K2-K5 buttons)
+    PORTD.OUT      = 0x00;
 }
 
 int GetLastKeyPressed(void)

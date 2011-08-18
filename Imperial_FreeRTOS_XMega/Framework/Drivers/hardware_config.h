@@ -83,6 +83,13 @@ void prvHoldPowerOn(void);
 void prvClockSetup(void);
 void prvPowerReduction(void);
 void CCPWrite( volatile uint8_t * address, uint8_t value );
+void prvLEDSetup(void);
+void GRNLEDON(void);
+void REDLEDON(void);
+void GRNLEDOFF(void);
+void REDLEDOFF(void);
+void prvBuzzerSetup(void);
+void vPulseBuzzer(void);
 
 
 

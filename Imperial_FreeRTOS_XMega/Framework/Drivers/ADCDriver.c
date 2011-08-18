@@ -33,15 +33,26 @@ static void vADCTask(void *pvParameters);
 void vStartADC(portTickType adcPeriod)
 {
 	//Setup the PORT setings.
+	//----------------------PORT Settings---------------------------
 	//PORTJ is the port used for the ADC input pins.
 	PORTJ.DIR = 0x00; //Set all pins on PORTJ as input pins.
 	//Port H is used to set the v/div and power for the ADC.
 	PORTH.OUT = 0x2D; //This sets the ADC on and sets each channel to 0.5v/div.
+	PORTB.DIR      = 0x00;   //CHA, CHB, Ext Trig, 2.0V
+    PORTB.OUT      = 0x00;
+	PORTH.DIR      = 0xFF;  // PDN, \OE, SELA, SELB //Used for setting up the ADC.
 	
+	PORTF.DIR |= (0x01 << 4); //Sets the direction for the ADC Clock.
+	PORTF.DIR |= (0x01 << 3); //Sets the direction for the channel selection.
+	
+	//---------------------------------------------------------------
+	
+	//--------------ADC Clock----------------------------------------
 	//Setup Clock for ADC.
 	TCF1.CTRLB = 0x11; //CCAEN override, frequency mode.
 	TCF1.CCA = 99; //ADC clock
 	TCF1.CTRLA = 0x01; //Enable Timer, Prescaler: clk/1
+	//---------------------------------------------------------------
 	
 	//Start the task to periodically read the ADC values and store them.
 	xTaskCreate(vADCTask, (signed char*) "ADC", adcSTACK_SIZE, (void *) adcPeriod, tskIDLE_PRIORITY+1, NULL);

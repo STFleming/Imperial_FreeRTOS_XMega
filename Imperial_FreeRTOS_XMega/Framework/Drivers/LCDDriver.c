@@ -41,9 +41,20 @@ static void vLCDTask( void *pvParameters );
 void vStartLCD(void)
 {
 	//Starts the lcd driver task which is used to compare the two arrays at a regular interval and update.
+	prvLCDPortSetup(); //Performs the PORT configuration for the LCD.
 	lcd_init(GRAPHTEXT);
 	xMutexLCD = xSemaphoreCreateMutex();
 	xTaskCreate( vLCDTask, ( signed char * ) "LCDTask", lcdSTACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
+}
+
+void prvLCDPortSetup(void)
+{
+		PORTF.DIR |= (0x01 << 7); //LCD WR
+		PORTF.DIR |= (0x01 << 6); //LCD RD
+		PORTF.DIR |= (0x01 << 1); //LCD A0
+		
+		PORTK.DIR      = 0xFF;  // LCD data
+		PORTK.OUT      = 0x00;
 }
 
 static void vLCDTask( void *pvParameters )

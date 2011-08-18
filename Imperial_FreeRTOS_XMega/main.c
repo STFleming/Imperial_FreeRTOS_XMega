@@ -188,10 +188,12 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 
 static void vPrintOutStuff(void *pvParameters)
 {
+	int i = 0;
 	for(;;)
 	{
 		vPrintNumber(0,0, GetLastKeyPressed());
-		SetDACOut(100);
+		i+=200;
+		SetDACOut(i);
 		SendCommString("Hello World.");
 		vPrintNumber(0,6, getADCchannelBdata());
 		vTaskDelay(150);
