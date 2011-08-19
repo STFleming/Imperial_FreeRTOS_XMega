@@ -412,8 +412,8 @@ static void prvSetupTimerInterrupt( void )
 	TCC0.INTCTRLA = 0x01; //Generates a LOW level interrupt when the counter has reached PER
 
 //Enable Low Level interrupts
-	PMIC.CTRL = 0x01; //Enables only low level interrupts on the device.
-
+	//PMIC.CTRL = 0x01; //Enables only low level interrupts on the device.
+	  PMIC.CTRL = 0x07; //Enables all interrupt levels.
 }
 /*-----------------------------------------------------------*/
 

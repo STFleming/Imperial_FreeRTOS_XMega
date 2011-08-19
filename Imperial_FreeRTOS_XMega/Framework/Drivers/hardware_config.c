@@ -7,6 +7,7 @@
 
 #include "hardware_config.h"
 #include "sed1335.h"
+#include "LCDDriver.h"
 
 void prvSetupHardware(void)
 {
@@ -19,6 +20,9 @@ void prvSetupHardware(void)
 	//Setup the virtual port registers.
 	prvSetupVirtualPortA(VPPORTB, VPPORTJ);
 	prvSetupVirtualPortB(VPPORTF, VPPORTK);
+	
+	//Start the Real Time Clock.
+	prvStartRTC(RTCTOSC, 4, DIV1024, INTERRUPTMED);
 }
 
 //--------------------------------------//
@@ -146,6 +150,29 @@ void prvPowerReduction(void)
 	
 	//---------------------------------------------------------------	
 }
+
+void prvStartRTC(uint8_t clock_source, uint16_t rtc_period, uint8_t rtc_prescale, uint8_t rtc_interrupt_level)
+{
+	uint8_t temp = (clock_source << 1) | 0x01; //Shifts the mode along one position and sets bit 0 the enable bit to one.
+	
+	if(RTC_SWITCH == 1)
+	{
+		CLK.RTCCTRL = temp; //Assign the clock to the RTC based on the input argument.
+		RTC.PER = rtc_period; //Sets the period that the RTC counts to before generating an interrupt.
+		RTC.CNT = 0; //Set the counter register to zero.
+		RTC.CTRL = rtc_prescale; //Sets the prescale value for the RTC based on the input argument.
+		RTC.INTCTRL = rtc_interrupt_level; //Sets the interrupt level for the RTC.
+	}
+	else
+	{
+		vPrintString(0,15, "ERROR:RTC SWITCHED OFF");
+	}
+}
+
+
+ISR(RTC_OVF_vect) {
+	REDLEDON();
+}	
 
 void prvClockSetup(void)
 {

@@ -17,7 +17,7 @@
 //---------------General Internal Peripherals -------------------------------
 #define AES_SWITCH 0 //This switches the AES encrypti1 module on or off.
 #define EBI_SWITCH 0 //This switches the external bus interface on or off.
-#define RTC_SWITCH 0 //This switches the real time clock module on or off.
+#define RTC_SWITCH 1 //This switches the real time clock module on or off.
 #define EVSYS_SWITCH 0 //This switches the event system on or off.
 #define DMA_SWITCH 0 //This switches the DMA module on or off.
 
@@ -82,6 +82,28 @@
 #define VPPORTQ 0x0E //PORTQ
 #define VPPORTR 0x0F //PORTR
 
+//Define setting for RTC
+#define RTCULP 0x00 //1KHz from internal 32KHz ULP
+#define RTCTOSC 0x01 //1.024 kHz from 32.768 kHz Crystal Oscillator on TOSC
+#define RTCRCOSC 0x02 //1.024 kHz from internal 32.768 kHz RC Oscillator
+#define RTCTOSC32 0x05 //32.768 kHz from 32.768 kHz Crystal Oscillator on TOSC
+
+//Define prescaler values.
+#define NOPRESCALE	0x00 //No clock source, device is stopped.
+#define DIV1		0x01 // Clock/1 (No prescaling).
+#define DIV2		0x02 // Clock/2.
+#define DIV8		0x03 // Clock/8.
+#define DIV16		0x04 // Clock/16.
+#define DIV64		0x05 // Clock/64.
+#define DIV256		0x06 // Clock/256.
+#define DIV1024		0x07 // Clock/1024.
+
+//Interrupt levels
+#define INTERRUPTOFF	0x00 //Disable interrupt
+#define INTERRUPTLOW	0x01 //LOW level interrupt
+#define INTERRUPTMED	0x02 //MED level interrupt
+#define INTERRUPTHIGH	0x03 //HIGH level interrupt
+
 // PORT DEFINITIONS
 #define ONBUTTON    3   // PORTQ
 #define BUZZER1     2   // PORTC
@@ -108,6 +130,7 @@ void prvBuzzerSetup(void);
 void vPulseBuzzer(void);
 void prvSetupVirtualPortA(uint8_t VPone, uint8_t VPtwo);
 void prvSetupVirtualPortB(uint8_t VPone, uint8_t VPtwo);
+void prvStartRTC(uint8_t clock_source, uint16_t rtc_period, uint8_t rtc_prescale, uint8_t rtc_interrupt_level);
 
 
 

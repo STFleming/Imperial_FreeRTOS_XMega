@@ -123,7 +123,7 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 //-------------------------------------------------------------
 //					Main Function 
 //-------------------------------------------------------------
-void main()
+void main(void)
 {
 	//Initial Hardware setup.
 	prvSetupHardware();
