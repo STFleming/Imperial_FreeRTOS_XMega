@@ -121,8 +121,8 @@ void main(void)
 	//			TASK CREATION - This must be performed before the scheduler starts
 	//-----------------------------------------------------------------------------------------
 	/* Create tasks to test LCD printing and keypad */
-	//xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
-	vStartDemoApplication();
+	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
+	//vStartDemoApplication();
 	//------------------------------------------------------------------------------------------
 
 	//------------------------------------------------------
