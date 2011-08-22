@@ -54,6 +54,7 @@
 #define PORTE_HIRES_SWITCH 0 //Switches HIRES PORTE on or off.
 #define PORTF_HIRES_SWITCH 1 //Switches HIRES PORTF on or off. REQUIRED FOR ADC OPERATION
 
+/*
 #define PORTC_TC1_SWITCH 0 //Switches timer/counter1 PORTC on or off.
 #define PORTD_TC1_SWITCH 0 //Switches timer/counter1 PORTD on or off.
 #define PORTE_TC1_SWITCH 0 //Switches timer/counter1 PORTE on or off.
@@ -63,6 +64,7 @@
 #define PORTD_TC0_SWITCH 1 //Switches timer/counter0 PORTD on or off.
 #define PORTE_TC0_SWITCH 0 //Switches timer/counter0 PORTE on or off.
 #define PORTF_TC0_SWITCH 0 //Switches timer/counter0 PORTF on or off.
+*/
 
 //Define virtual port mapping directives
 #define VPPORTA 0x00 //PORTA

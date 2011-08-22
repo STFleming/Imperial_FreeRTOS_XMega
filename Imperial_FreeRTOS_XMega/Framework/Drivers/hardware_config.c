@@ -137,7 +137,8 @@ void prvPowerReduction(void)
 	if(PORTD_HIRES_SWITCH != 1){PR.PRPD |= (0x01 << 2);} //HIRES on PORTD
 	if(PORTE_HIRES_SWITCH != 1){PR.PRPE |= (0x01 << 2);} //HIRES on PORTE
 	if(PORTF_HIRES_SWITCH != 1){PR.PRPF |= (0x01 << 2);} //HIRES on PORTF
-	
+
+/*	
 	//Timer/Counter 1
 	if(PORTC_TC1_SWITCH != 1){PR.PRPC |= (0x01 << 1);} //TC1 on PORTC
 	if(PORTD_TC1_SWITCH != 1){PR.PRPD |= (0x01 << 1);} //TC1 on PORTD
@@ -149,7 +150,8 @@ void prvPowerReduction(void)
 	if(PORTD_TC0_SWITCH != 1){PR.PRPD |= (0x01 << 0);} //TC0 on PORTD
 	if(PORTE_TC0_SWITCH != 1){PR.PRPE |= (0x01 << 0);} //TC0 on PORTE
 	if(PORTF_TC0_SWITCH != 1){PR.PRPF |= (0x01 << 0);} //TC0 on PORTF
-	
+*/	
+
 	//---------------------------------------------------------------	
 }
 
@@ -173,7 +175,7 @@ void prvStartRTC(uint8_t clock_source, uint16_t rtc_period, uint8_t rtc_prescale
 
 
 ISR(RTC_OVF_vect) {
-	REDLEDON();
+	//REDLEDON();
 }	
 
 void prvClockSetup(void)
