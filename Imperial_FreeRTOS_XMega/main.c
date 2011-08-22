@@ -82,35 +82,17 @@
 #include "ADCDriver.h"
 #include "CommPortDriver.h"
 
-/*Demo application header files */
-#include "integer.h" //Tests math operations
-#include "PollQ.h"	//Tests Queues
-#include "regtest.h" //Register tests 
-
-//-------------------------------------------------------------
-//		Priority Definitions
-//-------------------------------------------------------------
-#define mainQUEUE_POLL_PRIORITY			( tskIDLE_PRIORITY + 2 )
-#define mainERROR_TSK_PRIORITY			( tskIDLE_PRIORITY + 3 )
+//Demo application header file
+#include "demo.h"
 
 //-------------------------------------------------------------
 //				Function Prototypes
 //-------------------------------------------------------------
 void vApplicationIdleHook( void );
 
-/*
- * The task function for the "Check" task.
- */
-static void vErrorChecks( void *pvParameters );
 
 //Function prototype used to describe test task for printing out functions.
 static void vPrintOutStuff(void *pvParameters);
-
-/*
- * Checks the unique counts of other tasks to ensure they are still operational.
- * Flashes an LED if everything is okay. 
- */
-static void prvCheckOtherTasksAreStillRunning( void );
 
 void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTaskName );
 	/* This function is called immediately after task context is saved into stack. This is the case
@@ -126,31 +108,22 @@ void vApplicationStackOverflowHook( xTaskHandle *pxTask, signed portCHAR *pcTask
 void main(void)
 {
 	//Initial Hardware setup.
-	prvSetupHardware();
+	prvSetupHardware(); //This function is contained in hardware_config.c and manages things such as timers and powerreduction registers.
 	
 	//Start driver tasks.
 	vStartKeypadTask(); //Keypad driver
 	vStartLCD(); //LCD driver
-	vStartDAC(5); //DAC driver, takes sample rate as an input arguement as RTOS ticks (portTickType)
-	vStartADC(100); //ADC driver, taks sample rate as an input arguement as RTOS ticks (portTickType)
+	vStartDAC(5); //DAC driver, takes sample rate as an input argument as RTOS ticks (portTickType)
+	vStartADC(100); //ADC driver, taks sample rate as an input argument as RTOS ticks (portTickType)
 	vStartCommPort(); //Starts the comm port driver.
 	
 	//-----------------------------------------------------------------------------------------
 	//			TASK CREATION - This must be performed before the scheduler starts
 	//-----------------------------------------------------------------------------------------
-	
 	/* Create tasks to test LCD printing and keypad */
-	xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
-	
-	/* Create all the Demo test tasks */
-	//xTaskCreate( vErrorChecks, ( signed char * ) "Check", configMINIMAL_STACK_SIZE, NULL, mainERROR_TSK_PRIORITY, NULL );
-	//vStartIntegerMathTasks( tskIDLE_PRIORITY ); //Test tasks used to determine reliability of mathematical calculations.
-	//vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
-	//vStartRegTestTasks(); //Starts tasks used to test registers.
-	
+	//xTaskCreate(vPrintOutStuff, (signed char * )"Printing", 256, NULL, tskIDLE_PRIORITY+1, NULL);
+	vStartDemoApplication();
 	//------------------------------------------------------------------------------------------
-		
-	PMIC.CTRL = 0x87; //Enable all three interrupt levels with round robin scheduling.
 
 	//------------------------------------------------------
 	//		SCHEDULER STARTS HERE
@@ -200,73 +173,6 @@ static void vPrintOutStuff(void *pvParameters)
 		SendCommString("Hey Dr Clarke \r\n");
 		vPrintNumber(0,6, getADCchannelBdata());
 		vTaskDelay(150);
-	}
-}
-
-
-static void vErrorChecks( void *pvParameters )
-{
-static volatile unsigned long ulDummyVariable = 3UL;
-
-	/* The parameters are not used. */
-	( void ) pvParameters;
-
-	/* Cycle for ever, delaying then checking all the other tasks are still
-	operating without error. */
-	for( ;; )
-	{
-		vTaskDelay(300);
-
-		/* Perform a bit of 32bit maths to ensure the registers used by the 
-		integer tasks get some exercise. The result here is not important - 
-		see the demo application documentation for more info. */
-		ulDummyVariable *= 3;
-		
-		prvCheckOtherTasksAreStillRunning();
-	}
-}
-
-static void prvCheckOtherTasksAreStillRunning( void )
-{
-static portBASE_TYPE xErrorHasOccurred = pdFALSE;
-
-	if( xAreIntegerMathsTaskStillRunning() != pdTRUE ) //if statement used to report math test errors.
-	{
-		xErrorHasOccurred = pdTRUE;
-		vPrintString(0,0, "Math: FAIL");
-	}
-	else
-	{
-		vPrintString(0,0, "Math: PASS");
-	}
-
-	if( xArePollingQueuesStillRunning() != pdTRUE ) //if statement used to report queue errors.
-	{
-		xErrorHasOccurred = pdTRUE;
-		vPrintString(0,1, "Queue: FAIL");
-	}
-	else
-	{
-		vPrintString(0,1, "Queue: PASS");
-	}
-	
-	if( xAreRegTestTasksStillRunning() != pdTRUE ) //If statement used to report regtest errors.
-	{
-		xErrorHasOccurred = pdTRUE;
-		vPrintString(0,2, "RegTest: FAIL");
-	}
-	else
-	{
-		vPrintString(0,2, "RegTest: PASS");		
-	}
-	
-	if( xErrorHasOccurred == pdFALSE )
-	{
-		vPrintString(0,5, "Result: PASS");
-	}
-	else
-	{
-		vPrintString(0,5, "Result: FAIL");
 	}
 }
 /*-----------------------------------------------------------*/

@@ -14,7 +14,7 @@
 //It also has spaces where setup information for each timer/counter can be inputted.
 
 //TCD0
-#define TC0_PORTD_SWITCH 0 //Software switch for T/C0 on port D
+#define TC0_PORTD_SWITCH 1 //Software switch for T/C0 on port D
 		#define TC0_PORTD_PRESCALE DIV1024 //Prescale value for T/C0 on PORT D. Uses the defined prescale values.
 		#define TC0_PORTD_PERIOD 32000 //Defines the overflow period of the TC
 		#define TC0_PORTD_INTLVL INTERRUPTMED  //Determines the interrupt level on overflow, set INTERRUPTOFF to disable interrupts for this T/C.
