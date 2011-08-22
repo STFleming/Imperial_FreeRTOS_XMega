@@ -60,7 +60,7 @@
 #define PORTF_TC1_SWITCH 1 //Switches timer/counter1 PORTF on or off. THIS IS THE ADC CLOCK SOURCE
 
 #define PORTC_TC0_SWITCH 1 //PORT C T/C is used for the RTOS tick, IN ORDER FOR RTOS OPERATION KEEP ON.
-#define PORTD_TC0_SWITCH 0 //Switches timer/counter0 PORTD on or off.
+#define PORTD_TC0_SWITCH 1 //Switches timer/counter0 PORTD on or off.
 #define PORTE_TC0_SWITCH 0 //Switches timer/counter0 PORTE on or off.
 #define PORTF_TC0_SWITCH 0 //Switches timer/counter0 PORTF on or off.
 

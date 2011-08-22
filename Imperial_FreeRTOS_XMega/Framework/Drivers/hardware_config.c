@@ -4,7 +4,7 @@
  * Created: 15/07/2011 16:38:05
  *  Author: Shane Fleming
  */ 
-
+#include "TimersAndCounters.h"
 #include "hardware_config.h"
 #include "sed1335.h"
 #include "LCDDriver.h"
@@ -22,7 +22,9 @@ void prvSetupHardware(void)
 	prvSetupVirtualPortB(VPPORTF, VPPORTK);
 	
 	//Start the Real Time Clock.
-	prvStartRTC(RTCTOSC, 4, DIV1024, INTERRUPTMED);
+	prvStartRTC(RTCTOSC, 4, DIV1024, INTERRUPTMED); //Example RTC setup, generates an interrupt every 5 seconds.
+	
+	prvSetupTimers(); //sets up the timers according to the user specifications in TimersAndCounters.h
 }
 
 //--------------------------------------//
