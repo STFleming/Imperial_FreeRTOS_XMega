@@ -89,54 +89,120 @@ void prvPowerReduction(void)
 	
 	//General internal peripherals.
 	PR.PRGEN = 0x00;
-	if(AES_SWITCH != 1){PR.PRGEN |= (0x01 << 4);} //AES encryption module.
-	if(EBI_SWITCH != 1){PR.PRGEN |= (0x01 << 3);} //External Bus Interface.
-	if(RTC_SWITCH != 1){PR.PRGEN |= (0x01 << 2);} //Real Time Clock.
-	if(EVSYS_SWITCH != 1){PR.PRGEN |= (0x01 << 1);} //Event System.
-	if(DMA_SWITCH != 1){PR.PRGEN |= (0x01 << 0);} //DMA
+	#if (AES_SWITCH != 1)
+		PR.PRGEN |= (0x01 << 4); //AES encryption module.
+	#endif
+	
+	#if (EBI_SWITCH != 1)
+		PR.PRGEN |= (0x01 << 3); //External Bus Interface.
+	#endif
+	
+	#if (RTC_SWITCH != 1)
+		PR.PRGEN |= (0x01 << 2); //Real Time Clock.
+	#endif
+	
+	#if (EVSYS_SWITCH != 1)
+		PR.PRGEN |= (0x01 << 1); //Event System.
+	#endif
+	
+	#if (DMA_SWITCH != 1)
+		PR.PRGEN |= (0x01 << 0); //DMA
+	#endif
 	
 	//PORT specific peripherals PORTS A and B.
 	PR.PRPA = 0x00; PR.PRPB = 0x00;
-	if(PORTA_DAC_SWITCH != 1){DACA.CTRLA &= (0x00 << 0); PR.PRPA |= (0x01 << 2);} //We need to disable the DAC before stopping the clock to the peripheral.
-	if(PORTB_DAC_SWITCH != 1){DACB.CTRLA &= (0x00 << 0); PR.PRPB |= (0x01 << 2);} //Disable PORTB DAC and Stop the clock to the DAC.
-	if(PORTA_ADC_SWITCH != 1){ADCA.CTRLA &= (0x00 << 0); PR.PRPA |= (0x01 << 1);} //Disable the ADC on PORTA before stopping the clock.
-	if(PORTB_ADC_SWITCH != 1){ADCB.CTRLA &= (0x00 << 0); PR.PRPB |= (0x01 << 1);} //Disable the ADC on PORTA before stopping the clock.
-	if(PORTA_AC_SWITCH != 1){ACA.AC0CTRL &= (0x00 << 0); ACA.AC1CTRL &= (0x00 <<0); PR.PRPA |= (0x01 << 0);} //Disable the analog comparator on PORTA
-	if(PORTA_AC_SWITCH != 1){ACB.AC0CTRL &= (0x00 << 0); ACB.AC1CTRL &= (0x00 <<0); PR.PRPB |= (0x01 << 0);} //Disable the analog comparator on PORTB
+	#if (PORTA_DAC_SWITCH != 1)
+		DACA.CTRLA &= (0x00 << 0); PR.PRPA |= (0x01 << 2); //We need to disable the DAC before stopping the clock to the peripheral.
+	#endif
+	#if (PORTB_DAC_SWITCH != 1)
+		DACB.CTRLA &= (0x00 << 0); PR.PRPB |= (0x01 << 2); //Disable PORTB DAC and Stop the clock to the DAC.
+	#endif
+	#if (PORTA_ADC_SWITCH != 1)
+		ADCA.CTRLA &= (0x00 << 0); PR.PRPA |= (0x01 << 1); //Disable the ADC on PORTA before stopping the clock.
+	#endif
+	#if (PORTB_ADC_SWITCH != 1)
+		ADCB.CTRLA &= (0x00 << 0); PR.PRPB |= (0x01 << 1); //Disable the ADC on PORTA before stopping the clock.
+	#endif
+	#if (PORTA_AC_SWITCH != 1)
+		ACA.AC0CTRL &= (0x00 << 0); ACA.AC1CTRL &= (0x00 <<0); PR.PRPA |= (0x01 << 0); //Disable the analog comparator on PORTA
+	#endif
+	#if (PORTA_AC_SWITCH != 1)
+		ACB.AC0CTRL &= (0x00 << 0); ACB.AC1CTRL &= (0x00 <<0); PR.PRPB |= (0x01 << 0); //Disable the analog comparator on PORTB
+	#endif
 		
 	//Port specific peripherals PORTS C, D, E and F.
 	//---------------------------------------------------------------
 	PR.PRPC = 0x00; PR.PRPD = 0x00; PR.PRPE = 0x00; PR.PRPF = 0x00;
 	
 	//Two Wire Interface.
-	if(PORTC_TWI_SWITCH != 1){PR.PRPC |= (0x01 << 6);} //TWI on PORTC
-	if(PORTD_TWI_SWITCH != 1){PR.PRPD |= (0x01 << 6);} //TWI on PORTD
-	if(PORTE_TWI_SWITCH != 1){PR.PRPE |= (0x01 << 6);} //TWI on PORTE
-	if(PORTF_TWI_SWITCH != 1){PR.PRPF |= (0x01 << 6);} //TWI on PORTF
+	#if (PORTC_TWI_SWITCH != 1)
+		PR.PRPC |= (0x01 << 6); //TWI on PORTC
+	#endif
+	#if (PORTD_TWI_SWITCH != 1)
+		PR.PRPD |= (0x01 << 6); //TWI on PORTD
+	#endif
+	#if (PORTE_TWI_SWITCH != 1)
+		PR.PRPE |= (0x01 << 6); //TWI on PORTE
+	#endif
+	#if (PORTF_TWI_SWITCH != 1)
+		PR.PRPF |= (0x01 << 6); //TWI on PORTF
+	#endif
 	
 	//USART1
-	if(PORTC_USART1_SWITCH != 1){PR.PRPC |= (0x01 << 5);} //USART1 on PORTC
-	if(PORTD_USART1_SWITCH != 1){PR.PRPD |= (0x01 << 5);} //USART1 on PORTD
-	if(PORTE_USART1_SWITCH != 1){PR.PRPE |= (0x01 << 5);} //USART1 on PORTE
-	if(PORTF_USART1_SWITCH != 1){PR.PRPF |= (0x01 << 5);} //USART1 on PORTF
+	#if (PORTC_USART1_SWITCH != 1)
+		PR.PRPC |= (0x01 << 5); //USART1 on PORTC
+	#endif
+	#if (PORTD_USART1_SWITCH != 1)
+	 PR.PRPD |= (0x01 << 5); //USART1 on PORTD
+	#endif
+	#if (PORTE_USART1_SWITCH != 1)
+		PR.PRPE |= (0x01 << 5); //USART1 on PORTE
+	#endif
+	#if (PORTF_USART1_SWITCH != 1)
+		PR.PRPF |= (0x01 << 5); //USART1 on PORTF
+	#endif
 	
 	//USART0
-	if(PORTC_USART0_SWITCH != 1){PR.PRPC |= (0x01 << 4);} //USART0 on PORTC
-	if(PORTD_USART0_SWITCH != 1){PR.PRPD |= (0x01 << 4);} //USART0 on PORTD
-	if(PORTE_USART0_SWITCH != 1){PR.PRPE |= (0x01 << 4);} //USART0 on PORTE
-	if(PORTF_USART0_SWITCH != 1){PR.PRPF |= (0x01 << 4);} //USART0 on PORTF
+	#if (PORTC_USART0_SWITCH != 1)
+		PR.PRPC |= (0x01 << 4); //USART0 on PORTC
+	#endif
+	#if (PORTD_USART0_SWITCH != 1)
+		PR.PRPD |= (0x01 << 4); //USART0 on PORTD
+	#endif
+	#if (PORTE_USART0_SWITCH != 1)
+		PR.PRPE |= (0x01 << 4); //USART0 on PORTE
+	#endif
+	#if (PORTF_USART0_SWITCH != 1)
+		PR.PRPF |= (0x01 << 4); //USART0 on PORTF
+	#endif
 	
 	//Serial Peripheral Interface
-	if(PORTC_SPI_SWITCH != 1){PR.PRPC |= (0x01 << 3);} //SPI on PORTC
-	if(PORTD_SPI_SWITCH != 1){PR.PRPD |= (0x01 << 3);} //SPI on PORTD
-	if(PORTE_SPI_SWITCH != 1){PR.PRPE |= (0x01 << 3);} //SPI on PORTE
-	if(PORTF_SPI_SWITCH != 1){PR.PRPF |= (0x01 << 3);} //SPI on PORTF
+	#if (PORTC_SPI_SWITCH != 1)
+		PR.PRPC |= (0x01 << 3); //SPI on PORTC
+	#endif	
+	#if (PORTD_SPI_SWITCH != 1)
+		PR.PRPD |= (0x01 << 3); //SPI on PORTD
+	#endif
+	#if (PORTE_SPI_SWITCH != 1)
+		PR.PRPE |= (0x01 << 3); //SPI on PORTE
+	#endif
+	#if (PORTF_SPI_SWITCH != 1)
+		PR.PRPF |= (0x01 << 3); //SPI on PORTF
+	#endif
 	
 	//HIRES
-	if(PORTC_HIRES_SWITCH != 1){PR.PRPC |= (0x01 << 2);} //HIRES on PORTC
-	if(PORTD_HIRES_SWITCH != 1){PR.PRPD |= (0x01 << 2);} //HIRES on PORTD
-	if(PORTE_HIRES_SWITCH != 1){PR.PRPE |= (0x01 << 2);} //HIRES on PORTE
-	if(PORTF_HIRES_SWITCH != 1){PR.PRPF |= (0x01 << 2);} //HIRES on PORTF
+	#if (PORTC_HIRES_SWITCH != 1)
+		PR.PRPC |= (0x01 << 2); //HIRES on PORTC
+	#endif
+	#if (PORTD_HIRES_SWITCH != 1)
+		PR.PRPD |= (0x01 << 2); //HIRES on PORTD
+	#endif
+	#if (PORTE_HIRES_SWITCH != 1)
+		PR.PRPE |= (0x01 << 2); //HIRES on PORTE
+	#endif
+	#if (PORTF_HIRES_SWITCH != 1)
+		PR.PRPF |= (0x01 << 2); //HIRES on PORTF
+	#endif
 
 /*	
 	//Timer/Counter 1
