@@ -22,7 +22,8 @@ void prvSetupHardware(void)
 	prvSetupVirtualPortB(VPPORTF, VPPORTK);
 	
 	//Start the Real Time Clock.
-	prvStartRTC(RTCTOSC, 4, DIV1024, INTERRUPTMED); //Example RTC setup, generates an interrupt every 5 seconds.
+	//prvStartRTC(RTCTOSC, 4, DIV1024, INTERRUPTMED); //Example RTC setup, generates an interrupt every 5 seconds.
+	//RTC is now used as an option for the RTOS tick timer.
 	
 	prvSetupTimers(); //sets up the timers according to the user specifications in TimersAndCounters.h
 }
@@ -238,11 +239,7 @@ void prvStartRTC(uint8_t clock_source, uint16_t rtc_period, uint8_t rtc_prescale
 		vPrintString(0,15, "ERROR:RTC SWITCHED OFF");
 	}
 }
-
-
-ISR(RTC_OVF_vect) {
-	//REDLEDON();
-}	
+	
 
 void prvClockSetup(void)
 {

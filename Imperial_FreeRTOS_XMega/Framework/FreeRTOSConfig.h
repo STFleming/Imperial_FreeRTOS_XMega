@@ -68,6 +68,10 @@
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
 
+//RTOS Config switches
+#define configRTOS_TICK_SOURCE		1 // 0 = Timer circuit generates interrupt 2KHz.
+									  // 1 = RTC circuit generates interrupt 1KHz.
+
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			1
 #define configUSE_TICK_HOOK			0

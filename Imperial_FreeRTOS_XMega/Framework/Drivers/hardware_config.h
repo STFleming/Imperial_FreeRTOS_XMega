@@ -17,7 +17,7 @@
 //---------------General Internal Peripherals -------------------------------
 #define AES_SWITCH 0 //This switches the AES encrypti1 module on or off.
 #define EBI_SWITCH 0 //This switches the external bus interface on or off.
-#define RTC_SWITCH 1 //This switches the real time clock module on or off.
+#define RTC_SWITCH 1 //This switches the real time clock module on or off. 
 #define EVSYS_SWITCH 0 //This switches the event system on or off.
 #define DMA_SWITCH 0 //This switches the DMA module on or off.
 

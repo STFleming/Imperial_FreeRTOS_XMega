@@ -65,6 +65,7 @@ Changes from V2.6.0
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "hardware_config.h"
 
 /*-----------------------------------------------------------
  * Implementation of functions defined in portable.h for the AVR port.
@@ -400,7 +401,7 @@ static void prvSetupTimerInterrupt( void )
 {
 // Stub for the function used to setup the tick timer in the 
 // freeRTOS.
-
+#if (configRTOS_TICK_SOURCE == 0)
 //Timer Configuration:
 //The clk is running at 32MHz. This means we need to satisfy the equation
 // (32MHz/prescaler)/PER = 1KHz.
@@ -410,6 +411,9 @@ static void prvSetupTimerInterrupt( void )
 	TCC0.CNT = 0x00; //This register sets the counter initially to zero.
 	TCC0.PER = 0x3520; //Sets the max counter value to 8000.
 	TCC0.INTCTRLA = 0x01; //Generates a LOW level interrupt when the counter has reached PER
+#elif (configRTOS_TICK_SOURCE == 1)
+	prvStartRTC(RTCULP, 1, DIV1, INTERRUPTLOW);
+#endif
 
 //Enable Low Level interrupts
 	//PMIC.CTRL = 0x01; //Enables only low level interrupts on the device.
@@ -424,11 +428,20 @@ static void prvSetupTimerInterrupt( void )
 	 * the context is saved at the start of vPortYieldFromTick().  The tick
 	 * count is incremented after the context is saved.
 	 */
-ISR (TCC0_OVF_vect, ISR_NAKED)
-	{
-		vPortYieldFromTick();
-		asm volatile ( "reti" );
-	}
+	#if (configRTOS_TICK_SOURCE == 0)
+		ISR (TCC0_OVF_vect, ISR_NAKED)
+			{
+				vPortYieldFromTick();
+				asm volatile ( "reti" );
+			}
+	#elif (configRTOS_TICK_SOURCE == 1)
+		ISR(RTC_OVF_vect, ISR_NAKED)
+			{
+				vPortYieldFromTick();
+				asm volatile("reti");
+			}
+	#endif
+
 #else
 
 	/*
@@ -436,11 +449,19 @@ ISR (TCC0_OVF_vect, ISR_NAKED)
 	 * tick count.  We don't need to switch context, this can only be done by
 	 * manual calls to taskYIELD();
 	 */
-ISR (TCC0_OVF_vect, ISR_NAKED)
-	{
-		vTaskIncrementTick();
-		asm volatile ("reti"); //Added for ATXMega
-	}
+	#if (configRTOS_TICK_SOURCE == 0)
+		ISR (TCC0_OVF_vect, ISR_NAKED)
+			{
+				vTaskIncrementTick();
+				asm volatile ( "reti" );
+			}
+	#elif (configRTOS_TICK_SOURCE == 1)
+		ISR(RTC_OVF_vect, ISR_NAKED)
+			{
+				vTaskIncrementTick();
+				asm volatile("reti");
+			}
+	#endif
 #endif
 
 
