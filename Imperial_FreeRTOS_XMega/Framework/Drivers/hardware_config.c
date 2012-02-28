@@ -40,8 +40,8 @@ void prvLEDSetup(void)
 
 void GRNLEDON(void){PORTA.OUT |= (0x01 << 4);} //Switches the green led on.
 void REDLEDON(void){PORTA.OUT |= (0x01 << 5);} //Switches the red led on.
-void GRNLEDOFF(void){PORTA.OUT &= (0x00 << 4);} //Switches the green led off.
-void REDLEDOFF(void){PORTA.OUT &= (0x00 << 5);} //Switches the red led off.
+void GRNLEDOFF(void){PORTA.OUT &= ~(0x01 << 4);} //Switches the green led off.
+void REDLEDOFF(void){PORTA.OUT &= ~(0x01 << 5);} //Switches the red led off.
 //-----------------------------------------------------------------------------
 
 //--------------------------------------//
